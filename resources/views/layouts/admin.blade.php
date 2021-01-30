@@ -8,6 +8,7 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/9e665f9e92.js" crossorigin="anonymous"></script>
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
@@ -50,8 +51,8 @@
                         </li>
                     @endguest
                 </ul>
-                <form class="form-inline  my-2 my-lg-0">
-                    <input class="form-control mr-sm-2" type="search" placeholder="БЫСТРЫЙ ПОИСК ПО: ID / INN / PHONE" aria-label="Search">
+                <form class="form-inline  my-2 my-lg-0" method="get" action="{{ route('contacts.index') }}">
+                    <input name="q" required class="form-control mr-sm-2" type="search" placeholder="БЫСТРЫЙ ПОИСК ПО: ID / INN / PHONE" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">ПОИСК</button>
                 </form>
             </div>

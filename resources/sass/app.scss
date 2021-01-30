@@ -10,3 +10,18 @@
 hr.new1 {
     border: 2px solid $blue;
 }
+
+.loaderWrap {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 100;
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text-bold {
+    font-weight: bold !important;
+}

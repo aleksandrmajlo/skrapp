@@ -9,10 +9,11 @@ use Illuminate\Support\Facades\Hash;
 class OperatorController extends Controller
 {
 
-    protected $paginate=20;
+
     public function index()
     {
-        $operators=User::where('role',2)->paginate($this->paginate);
+        $paginate=config('custom.paginate');
+        $operators=User::where('role',2)->paginate($paginate);
         return view('operators.index',[
             'operators'=>$operators
         ]);

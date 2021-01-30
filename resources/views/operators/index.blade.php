@@ -50,7 +50,9 @@
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    {{ $operators->links() }}
+                    <div class="d-flex justify-content-center">
+                        {{ $operators->links() }}
+                    </div>
                 </div>
             </div>
         @else

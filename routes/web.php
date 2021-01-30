@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,7 +11,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -22,6 +20,7 @@ Route::get('/no-access', function () {
 Auth::routes(['register' => false]);
 
 Route::group(['middleware' => 'roleadmin'], function () {
+
     Route::get('/dashboardadmin', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboardadmin');
     //операторы
     Route::resource('operators', App\Http\Controllers\Admin\OperatorController::class);
@@ -32,15 +31,33 @@ Route::group(['middleware' => 'roleadmin'], function () {
     // настройки
     Route::resource('settings', App\Http\Controllers\Admin\SettingController::class);
 
-    // загрузка exel
-    Route::post('file-upload', [App\Http\Controllers\Admin\FileUploadController::class, 'fileUploadExcel'])->name('file.upload.excel');
 
 });
-
+// оператор
 Route::group(['middleware' => 'roleoperator'], function () {
 
     Route::get('/dashboardoperator', [App\Http\Controllers\HomeController::class, 'operator'])->name('dashboardoperator');
+    // отчеты
+    Route::resource('operatorreports', App\Http\Controllers\Operator\ReportController::class);
+    // контакты
+    Route::get('operatorcontacts/search', 'App\Http\Controllers\Operator\ContactController@search')->name('search_operatorcontacts');
+    Route::resource('operatorcontacts', App\Http\Controllers\Operator\ContactController::class);
 
 });
 
+// загрузка exel контактов
+Route::post('file-upload', [App\Http\Controllers\Admin\FileUploadController::class, 'fileUploadExcel'])->name('file.upload.excel');
 
+Route::group(['prefix' => 'ajax'], function () {
+
+    Route::post('/operators/authenticationlogs', 'App\Http\Controllers\Api\OperatorController@logs');
+    // разрешение для операторов  для работы  с банками
+    Route::post('/settings/shippingpermission', 'App\Http\Controllers\Api\ShippingController@permission');
+    Route::post('/settings/shippingpermission_send', 'App\Http\Controllers\Api\ShippingController@permission_send');
+    Route::post('/settings/setting', 'App\Http\Controllers\Api\ShippingController@setting');
+    Route::post('/settings/setting_send', 'App\Http\Controllers\Api\ShippingController@setting_send');
+
+});
+
+// тестовый удалить!!!!!!!!!!!!!!
+Route::get('test','App\Http\Controllers\TestController@index');

@@ -17,4 +17,5 @@ use Illuminate\Support\Facades\Route;
 //Route::middleware('auth:api')->get('/user', function (Request $request) {
 //    return $request->user();
 //});
-Route::post('/operators/authenticationlogs', 'App\Http\Controllers\Api\OperatorController@logs');
+
+

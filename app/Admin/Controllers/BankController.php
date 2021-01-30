@@ -64,6 +64,7 @@ class BankController extends AdminController
         $form = new Form(new Bank());
 
         $form->text('name', __('Name'));
+        $form->text('shortname','Короткое название');
         $form->number('sort', __('Sort'))->default(1);
 
         return $form;

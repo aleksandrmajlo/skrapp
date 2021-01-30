@@ -9,11 +9,11 @@ class HomeController extends Controller
 
     public function index()
     {
-        return view('home');
+        return view('dashboardadmin');
     }
     public function operator()
     {
-        return view('operator');
+        return view('dashboardoperator');
     }
 
 }

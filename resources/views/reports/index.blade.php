@@ -3,13 +3,6 @@
 @section('content')
     <div class="container">
         <h1 class="text-center mb-3">Отчеты</h1>
-
-
-
-
-
-
-
+        @include('reports.filter')
     </div>
-
 @endsection

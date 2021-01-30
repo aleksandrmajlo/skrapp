@@ -11,12 +11,6 @@ use Yadahan\AuthenticationLog\AuthenticationLogable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, AuthenticationLogable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'name',
         'email',
@@ -27,7 +21,6 @@ class User extends Authenticatable
         'status',
         'upload'
     ];
-
     protected $hidden = [
         'password',
         'remember_token',
@@ -39,7 +32,19 @@ class User extends Authenticatable
 
 
     public function contacts(){
-        return $this->hasMany('App\Model\Contact');
+        return $this->hasMany('App\Models\Contact');
+    }
+
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
+
+
+    public function scopeActiveoperator($query)
+    {
+        return $query->where('status', '1')->where('role',2);
     }
 
 }

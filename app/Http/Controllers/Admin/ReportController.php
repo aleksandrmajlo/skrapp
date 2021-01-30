@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bank;
 use Illuminate\Http\Request;
-
 class ReportController extends Controller
 {
     /**
@@ -14,7 +14,10 @@ class ReportController extends Controller
      */
     public function index()
     {
-        return view('reports.index',[]);
+        $banks=Bank::orderBy('sort')->get();
+        return view('reports.index',[
+            'banks'=>$banks
+        ]);
     }
 
     /**

@@ -31,16 +31,14 @@
         props: ["id"],
         created() {
             axios
-                .post("/api/operators/authenticationlogs", {
+                .post("/ajax/operators/authenticationlogs", {
                     id:this.id,
                     offset: this.offset
                 })
                 .then((response) => {
-                    console.log(response.data)
                     this.items=response.data;
                 })
                 .catch((err) => {
-                    // console.log(err);
                 });
         },
     };
