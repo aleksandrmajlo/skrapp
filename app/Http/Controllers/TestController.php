@@ -14,12 +14,8 @@ use GuzzleHttp\Psr7;
 
 class TestController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function index1()
     {
 
         $test = env('APP_ENV');
@@ -121,69 +117,70 @@ class TestController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+
+    public function index()
     {
-        //
+
+
+        $bank_id = 2;
+        $bank_config = config('bank.2');
+        $headers = [
+            'x-auth-token' =>  $bank_config['token'],
+            'Accept' => 'application/json',
+            'content-type' => 'multipart/form-data',
+        ];
+        $client = new Client([
+            'base_uri' => $bank_config['host'],
+        ]);
+        // город
+        try {
+            $response = $client->request('GET',
+                $bank_config['city'],
+                ['headers' => $headers]
+            )->getBody()->getContents();
+            // тут добавляем города
+            $response = json_decode($response);
+            if($response){
+                City::where('bank_id', $bank_id)->delete();
+                foreach ($response as $item) {
+                    $city = new City();
+                    $city->title = $item->city;
+                    $city->idd = $item->id;
+                    $city->bank_id = $bank_id;
+                    $city->save();
+                }
+            }
+        } catch (RequestException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\Message::toString($e->getResponse());
+            }
+        }
+         // тариф
+        try {
+            $response = $client->request('GET',
+                $bank_config['tariff'],
+                ['headers' => $headers]
+            )->getBody()->getContents();
+            // тут добавляем тариф
+            $response = json_decode($response);
+            if($response){
+                Tariff::where('bank_id', $bank_id)->delete();
+                foreach ($response->tariffs as $item) {
+                    $tariff = new Tariff();
+                    $tariff->title = $item->name;
+                    $tariff->idd = $item->id;
+                    $tariff->bank_id = $bank_id;
+                    $tariff->save();
+                }
+            }
+        } catch (RequestException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\Message::toString($e->getResponse());
+            }
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

@@ -31,47 +31,10 @@ class BankOtkrytie extends Command
     public function handle()
     {
 
-
-        $test = env('APP_ENV');
         $bank_id = 2;
-        $json_city = '
-        [
-    {
-        "id": "0731cca0-620a-44a2-b809-8374c1505d6e",
-        "city": "Абакан"
-    },
-    {
-        "id": "0ff29066-7d2b-45bd-a32d-9d197dfa0d0d",
-        "city": "Агинское"
-    },
-    {
-        "id": "ac9e1416-e517-4405-8d76-99c9515c984f",
-        "city": "Ярославль"
-    },
-    {
-        "id": "45ad0d40-00fa-41a9-aa6b-8232de1f4a5c",
-        "city": "Ярцево"
-    }
-   ]';
-
-        $json_tariff= '
-        {
-          "tariffs": [
-        {
-            "id": "1cf8afe8-24cd-4400-829f-b6a9ec4bfc11",
-            "name": "Наименование тарифа 1"
-        },
-        {
-            "id": "6bc016e9-4950-4c79-83ca-00fa1883fa0b",
-            "name": "Наименование тарифа 2"
-        }
-        ]
-        }
-        ';
-
         $bank_config = config('bank.2');
         $headers = [
-            'Authorization' => 'Bearer ' . $bank_config['token'],
+            'x-auth-token' => $bank_config['token'],
             'Accept' => 'application/json',
             'content-type' => 'multipart/form-data',
         ];
@@ -85,40 +48,8 @@ class BankOtkrytie extends Command
                 ['headers' => $headers]
             )->getBody()->getContents();
             // тут добавляем города
-        } catch (RequestException $e) {
-            echo Psr7\Message::toString($e->getRequest());
-            if ($e->hasResponse()) {
-                echo Psr7\Message::toString($e->getResponse());
-            }
-            if ($test == 'testing') {
-                $response = json_decode($json_tariff);
-                if($response->tariffs){
-                    Tariff::where('bank_id', $bank_id)->delete();
-                    foreach ($response->tariffs as $item) {
-                        $tariff = new Tariff();
-                        $tariff->title = $item->name;
-                        $tariff->idd = $item->id;
-                        $tariff->bank_id = $bank_id;
-                        $tariff->save();
-                    }
-                }
-
-            }
-        }
-        // тариф
-        try {
-            $response = $client->request('GET',
-                $bank_config['tariff'],
-                ['headers' => $headers]
-            )->getBody()->getContents();
-            // тут добавляем тариф
-        } catch (RequestException $e) {
-            echo Psr7\Message::toString($e->getRequest());
-            if ($e->hasResponse()) {
-                echo Psr7\Message::toString($e->getResponse());
-            }
-            if ($test == 'testing') {
-                $response = json_decode($json_city);
+            $response = json_decode($response);
+            if ($response) {
                 City::where('bank_id', $bank_id)->delete();
                 foreach ($response as $item) {
                     $city = new City();
@@ -128,8 +59,36 @@ class BankOtkrytie extends Command
                     $city->save();
                 }
             }
+        } catch (RequestException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\Message::toString($e->getResponse());
+            }
         }
-
+        // тариф
+        try {
+            $response = $client->request('GET',
+                $bank_config['tariff'],
+                ['headers' => $headers]
+            )->getBody()->getContents();
+            // тут добавляем тариф
+            $response = json_decode($response);
+            if ($response) {
+                Tariff::where('bank_id', $bank_id)->delete();
+                foreach ($response->tariffs as $item) {
+                    $tariff = new Tariff();
+                    $tariff->title = $item->name;
+                    $tariff->idd = $item->id;
+                    $tariff->bank_id = $bank_id;
+                    $tariff->save();
+                }
+            }
+        } catch (RequestException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\Message::toString($e->getResponse());
+            }
+        }
 
     }
 }

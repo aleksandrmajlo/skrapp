@@ -1,3 +1,9 @@
+<div class="alert alert-success d-none" id="successAlert" role="alert">
+    Контакт обновлен
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
 <div class="table-responsive">
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
@@ -157,7 +163,6 @@
                 <button disabled class="btn btn-default">ОТПРАВИТЬ</button>
             </td>
         </tr>
-
         <tr>
             <td>PHONE</td>
             <td>
@@ -175,7 +180,6 @@
             <td></td>
             <td></td>
         </tr>
-
         <tr>
             <td>EMAIL</td>
             <td>
@@ -193,7 +197,6 @@
             <td></td>
             <td></td>
         </tr>
-
         <tr>
             <td>ADDRESS</td>
             <td>
@@ -211,8 +214,10 @@
             <td></td>
             <td></td>
         </tr>
-
         </tbody>
     </table>
 </div>
-<button disabled id="saveClient" class="btn btn-primary ">Сохранить измененные данные контакта</button>
+<button disabled id="saveClient" class="btn btn-primary " data-id="{{$contact->id}}">
+    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+    <span>Сохранить измененные данные контакта</span>
+</button>

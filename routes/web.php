@@ -56,7 +56,9 @@ Route::group(['prefix' => 'ajax'], function () {
     Route::post('/settings/shippingpermission_send', 'App\Http\Controllers\Api\ShippingController@permission_send');
     Route::post('/settings/setting', 'App\Http\Controllers\Api\ShippingController@setting');
     Route::post('/settings/setting_send', 'App\Http\Controllers\Api\ShippingController@setting_send');
-
+    // для работы с контактами
+    Route::post('/contacts/update', 'App\Http\Controllers\Api\ContactAjax@update');
+    Route::post('/contacts/log', 'App\Http\Controllers\Api\ContactAjax@log');
 });
 
 // тестовый удалить!!!!!!!!!!!!!!

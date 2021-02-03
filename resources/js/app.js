@@ -1,4 +1,3 @@
-
 require('./bootstrap');
 require('./common');
 window.Vue = require('vue');
@@ -15,7 +14,9 @@ Vue.use(VueLoaders);
 Vue.component('authentication-log', require('./components/operator/AuthenticationLog.vue').default);
 Vue.component('shipping-permission', require('./components/settings/ShippingPermission.vue').default);
 Vue.component('setting-admin', require('./components/settings/SettingAdmin.vue').default);
-// Vue.component('contact-log', require('./components/settings/ContactLog.vue').default);
+
+// контакты лог
+Vue.component('contact-log', require('./components/contacts/ContactLog.vue').default);
 
 const app = new Vue({
     el: '#app',
