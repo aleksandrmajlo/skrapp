@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Contact;
 use Illuminate\Http\Request;
 
 use App\Models\City;
 use App\Models\Tariff;
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7;
@@ -40,7 +42,7 @@ class TestController extends Controller
     }
    ]';
 
-        $json_tariff= '
+        $json_tariff = '
         {
           "tariffs": [
         {
@@ -78,7 +80,7 @@ class TestController extends Controller
             }
             if ($test == 'testing') {
                 $response = json_decode($json_tariff);
-                if($response->tariffs){
+                if ($response->tariffs) {
                     Tariff::where('bank_id', $bank_id)->delete();
                     foreach ($response->tariffs as $item) {
                         $tariff = new Tariff();
@@ -91,7 +93,7 @@ class TestController extends Controller
 
             }
         }
-         // тариф
+        // тариф
         try {
             $response = $client->request('GET',
                 $bank_config['tariff'],
@@ -125,7 +127,7 @@ class TestController extends Controller
         $bank_id = 2;
         $bank_config = config('bank.2');
         $headers = [
-            'x-auth-token' =>  $bank_config['token'],
+            'x-auth-token' => $bank_config['token'],
             'Accept' => 'application/json',
             'content-type' => 'multipart/form-data',
         ];
@@ -140,7 +142,7 @@ class TestController extends Controller
             )->getBody()->getContents();
             // тут добавляем города
             $response = json_decode($response);
-            if($response){
+            if ($response) {
                 City::where('bank_id', $bank_id)->delete();
                 foreach ($response as $item) {
                     $city = new City();
@@ -156,7 +158,7 @@ class TestController extends Controller
                 echo Psr7\Message::toString($e->getResponse());
             }
         }
-         // тариф
+        // тариф
         try {
             $response = $client->request('GET',
                 $bank_config['tariff'],
@@ -164,7 +166,7 @@ class TestController extends Controller
             )->getBody()->getContents();
             // тут добавляем тариф
             $response = json_decode($response);
-            if($response){
+            if ($response) {
                 Tariff::where('bank_id', $bank_id)->delete();
                 foreach ($response->tariffs as $item) {
                     $tariff = new Tariff();
@@ -180,6 +182,66 @@ class TestController extends Controller
                 echo Psr7\Message::toString($e->getResponse());
             }
         }
+    }
+
+    public function index2(Request $request)
+    {
+
+        $bank_id = $request->bank_id;
+        $bank_id = 2;
+        $city_id = $request->city_id;
+        $city_id = "0731cca0-620a-44a2-b809-8374c1505d6e";
+        $city = City::where('idd', $city_id)->first();
+
+        $tariff_id = $request->tariff_id;
+        $tariff_id = "679ac815-e5de-4ae6-b6f0-4b6e843166af";
+        $contact_id = $request->contact_id;
+        $contact_id = 787;
+
+        $contact = Contact::find($contact_id);
+        $contact_data = [
+            'full_name' => $contact->fullname,
+            'inn' => $contact->inn,
+            'email' => $contact->email,
+            'phone' => $contact->phone,
+            'tariff' => $tariff_id,
+            'city' => $city->title,
+        ];
+        $bank_config = config('bank.' . $bank_id);
+        $headers = [
+            'x-auth-token' => $bank_config['token'],
+            'Accept' => 'application/json',
+            'content-type' => 'multipart/form-data',
+        ];
+        $client = new Client([
+            'base_uri' => $bank_config['host'],
+        ]);
+        if (env('APP_ENV') === 'testing') {
+            $url = $bank_config['test_add'];
+        } else {
+            $url = $bank_config['test_add'];
+        }
+        $resust = [
+            'idd' => null,
+            'input' => null
+        ];
+        try {
+            $response = $client->request('POST',
+                $url,
+                [
+                    'headers' => $headers,
+                    'form_params' => $contact_data,
+                ]
+            )->getBody()->getContents();
+            $response = json_decode($response);
+            $resust['idd'] = $response->id;
+        } catch (RequestException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            if ($e->hasResponse()) {
+                $resust['input'] = Psr7\Message::toString($e->getResponse());
+            }
+        }
+
     }
 
 

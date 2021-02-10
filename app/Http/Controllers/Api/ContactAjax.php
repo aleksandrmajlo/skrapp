@@ -4,10 +4,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\City;
 use App\Models\Contact;
+use App\Models\Report;
 use App\Models\ContactLog;
+
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7;
 
 
 class ContactAjax extends Controller
@@ -66,6 +74,76 @@ class ContactAjax extends Controller
         }
         return response()->json([
             'contactlogs' => $res_contactlogs,
+        ]);
+
+    }
+
+    // отправка данных в банк
+    public  function  sendBankContac(Request $request){
+
+        $bank_id = $request->bank_id;
+        $city_id = $request->city_id;
+        $city = City::where('idd', $city_id)->first();
+        $tariff_id = $request->tariff_id;
+        $contact_id = $request->contact_id;
+
+        $contact = Contact::find($contact_id);
+        $contact_data = [
+            'full_name' => $contact->fullname,
+            'inn' => $contact->inn,
+            'email' => $contact->email,
+            'phone' => $contact->phone,
+            'tariff' => $tariff_id,
+            'city' => $city->title,
+        ];
+        $bank_config = config('bank.' . $bank_id);
+        $headers = [
+            'x-auth-token' => $bank_config['token'],
+            'Accept' => 'application/json',
+            'content-type' => 'multipart/form-data',
+        ];
+        $client = new Client([
+            'base_uri' => $bank_config['host'],
+        ]);
+        if (env('APP_ENV') === 'testing') {
+            $url = $bank_config['test_add'];
+        } else {
+            $url = $bank_config['test_add'];
+        }
+        $resust = [
+            'idd' => null,
+            'input' => null
+        ];
+        try {
+            $response = $client->request('POST',
+                $url,
+                [
+                    'headers' => $headers,
+                    'form_params' => $contact_data,
+                ]
+            )->getBody()->getContents();
+            $response = json_decode($response);
+            $resust['idd'] = $response->id;
+        } catch (RequestException $e) {
+            $resust['input']=Psr7\Message::toString($e->getRequest());
+            if ($e->hasResponse()) {
+                $resust['input'] =$resust['input']. Psr7\Message::toString($e->getResponse());
+            }
+        }
+
+        $report=new Report;
+        $report->bank_id=$request->bank_id;
+        $report->city=$city->title;
+        $report->tariff_id=$request->tariff_id;
+        $report->contact_id=$request->contact_id;
+        $report->user_id=Auth::user()->id;
+        $report->input=$resust['input'];
+        $report->idd=$resust['idd'];
+
+        $report->save();
+
+        return response()->json([
+            'suc' => true
         ]);
 
     }

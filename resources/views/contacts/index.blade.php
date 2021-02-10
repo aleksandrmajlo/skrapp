@@ -7,7 +7,6 @@
         @include('contacts.upload')
         {{--Загрузка--}}
         @include('contacts.filter')
-
         <div class="row">
             <div class="col-md-12">
                 <div class="table-responsive">
@@ -60,5 +59,4 @@
                 </div>
             </div>
         </div>
-
 @endsection

@@ -35,21 +35,16 @@ Route::group(['middleware' => 'roleadmin'], function () {
 });
 // оператор
 Route::group(['middleware' => 'roleoperator'], function () {
-
     Route::get('/dashboardoperator', [App\Http\Controllers\HomeController::class, 'operator'])->name('dashboardoperator');
     // отчеты
     Route::resource('operatorreports', App\Http\Controllers\Operator\ReportController::class);
     // контакты
     Route::get('operatorcontacts/search', 'App\Http\Controllers\Operator\ContactController@search')->name('search_operatorcontacts');
     Route::resource('operatorcontacts', App\Http\Controllers\Operator\ContactController::class);
-
 });
-
 // загрузка exel контактов
 Route::post('file-upload', [App\Http\Controllers\Admin\FileUploadController::class, 'fileUploadExcel'])->name('file.upload.excel');
-
 Route::group(['prefix' => 'ajax'], function () {
-
     Route::post('/operators/authenticationlogs', 'App\Http\Controllers\Api\OperatorController@logs');
     // разрешение для операторов  для работы  с банками
     Route::post('/settings/shippingpermission', 'App\Http\Controllers\Api\ShippingController@permission');
@@ -59,7 +54,9 @@ Route::group(['prefix' => 'ajax'], function () {
     // для работы с контактами
     Route::post('/contacts/update', 'App\Http\Controllers\Api\ContactAjax@update');
     Route::post('/contacts/log', 'App\Http\Controllers\Api\ContactAjax@log');
-});
 
+    Route::post('/contact/sendBankContac', 'App\Http\Controllers\Api\ContactAjax@sendBankContac');
+
+});
 // тестовый удалить!!!!!!!!!!!!!!
-Route::get('test','App\Http\Controllers\TestController@index');
+Route::get('test','App\Http\Controllers\TestController@index2');

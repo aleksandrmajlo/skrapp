@@ -10,40 +10,12 @@
         <tr>
             <th scope="col"></th>
             <th scope="col">СВЕДЕНИЯ</th>
-            <th scope="col">БАНК</th>
-            <th scope="col">СТАТУС</th>
-            <th scope="col">CityCode</th>
-            <th scope="col">ProductCode</th>
-            <th scope="col"></th>
         </tr>
         </thead>
         <tbody>
         <tr>
             <td>ID</td>
             <td>{{$contact->idbank}}</td>
-            <td>{{$banks[0]->name}}</td>
-            <td>
-                <!--
-                [0 — НЕТ в системе] /
-                [1 — Есть в системе] /
-                [2 — Анкета отправлена]  /
-                [ 3 — Счёт открыт ]
-                + [ДАТА присвоения статуса]
-                -->
-            </td>
-            <td>
-                <select name="city">
-                    <option>Выбирите город</option>
-                </select>
-            </td>
-            <td>
-                <select>
-                    <option>Тип продукта</option>
-                </select>
-            </td>
-            <td>
-                <button disabled class="btn btn-default">ОТПРАВИТЬ</button>
-            </td>
         </tr>
         <tr>
             <td>INN</td>
@@ -52,42 +24,10 @@
                     <a class="changeLink" href="#"><i class="fab fa-stack-exchange"></i></a>
                 </div>
                 <div class="resetData   align-items-center justify-content-between d-none">
-                    <input class="form-control dataInp" type="text" data-orig="{{$contact->inn}}" value="{{$contact->inn}}" name="inn">
+                    <input class="form-control dataInp" type="text" data-orig="{{$contact->inn}}"
+                           value="{{$contact->inn}}" name="inn">
                     <a class="resetLink" href="#"><i class="far fa-window-close"></i></a>
                 </div>
-            </td>
-            <td>{{$banks[1]->name}}</td>
-            <td>
-                <!--
-                [0 — НЕТ в системе] /
-                [1 — Есть в системе] /
-                [2 — Анкета отправлена]  /
-                [ 3 — Счёт открыт ]
-                + [ДАТА присвоения статуса]
-                -->
-            </td>
-            <td>
-                <select name="city">
-                    <option>Выбирите город</option>
-                    @if($banks[1]->cities)
-                        @foreach($banks[1]->cities as $city)
-                            <option value="{{$city->idd}}">{{$city->title}}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </td>
-            <td>
-                <select name="tariff">
-                    <option>Тип продукта</option>
-                    @if($banks[1]->tariffs)
-                        @foreach($banks[1]->tariffs as $tariff)
-                            <option value="{{$tariff->idd}}">{{$tariff->title}}</option>
-                        @endforeach
-                    @endif
-                </select>
-            </td>
-            <td>
-                <button disabled class="btn btn-default">ОТПРАВИТЬ</button>
             </td>
         </tr>
         <tr>
@@ -98,33 +38,13 @@
                     <a class="changeLink" href="#"><i class="fab fa-stack-exchange"></i></a>
                 </div>
                 <div class="resetData   align-items-center justify-content-between d-none">
-                    <textarea class="form-control dataInp" type="text" data-orig="{{$contact->organization}}" value="{{$contact->organization}}" name="organization">{{$contact->organization}}</textarea>
+                    <textarea class="form-control dataInp" type="text" data-orig="{{$contact->organization}}"
+                              value="{{$contact->organization}}"
+                              name="organization">{{$contact->organization}}</textarea>
                     <a class="resetLink" href="#"><i class="far fa-window-close"></i></a>
                 </div>
             </td>
-            <td>{{$banks[2]->name}}</td>
-            <td>
-                <!--
-                [0 — НЕТ в системе] /
-                [1 — Есть в системе] /
-                [2 — Анкета отправлена]  /
-                [ 3 — Счёт открыт ]
-                + [ДАТА присвоения статуса]
-                -->
-            </td>
-            <td>
-                <select name="city">
-                    <option>Выбирите город</option>
-                </select>
-            </td>
-            <td>
-                <select name="tariff">
-                    <option>Тип продукта</option>
-                </select>
-            </td>
-            <td>
-                <button disabled class="btn btn-default">ОТПРАВИТЬ</button>
-            </td>
+
         </tr>
         <tr>
             <td>FULLNAME</td>
@@ -134,34 +54,13 @@
                     <a class="changeLink" href="#"><i class="fab fa-stack-exchange"></i></a>
                 </div>
                 <div class="resetData   align-items-center justify-content-between d-none">
-                    <textarea class="form-control dataInp" type="text" data-orig="{{$contact->fullname}}" value="{{$contact->fullname}}" name="fullname">{{$contact->fullname}}</textarea>
+                    <textarea class="form-control dataInp" type="text" data-orig="{{$contact->fullname}}"
+                              value="{{$contact->fullname}}" name="fullname">{{$contact->fullname}}</textarea>
                     <a class="resetLink" href="#"><i class="far fa-window-close"></i></a>
                 </div>
 
             </td>
-            <td>{{$banks[3]->name}}</td>
-            <td>
-                <!--
-                [0 — НЕТ в системе] /
-                [1 — Есть в системе] /
-                [2 — Анкета отправлена]  /
-                [ 3 — Счёт открыт ]
-                + [ДАТА присвоения статуса]
-                -->
-            </td>
-            <td>
-                <select name="">
-                    <option>Выбирите город</option>
-                </select>
-            </td>
-            <td>
-                <select>
-                    <option>Тип продукта</option>
-                </select>
-            </td>
-            <td>
-                <button disabled class="btn btn-default">ОТПРАВИТЬ</button>
-            </td>
+
         </tr>
         <tr>
             <td>PHONE</td>
@@ -170,15 +69,11 @@
                     <a class="changeLink" href="#"><i class="fab fa-stack-exchange"></i></a>
                 </div>
                 <div class="resetData   align-items-center justify-content-between d-none">
-                    <input class="form-control dataInp" type="tel" data-orig="{{$contact->phone}}" value="{{$contact->phone}}" name="phone">
+                    <input class="form-control dataInp" type="tel" data-orig="{{$contact->phone}}"
+                           value="{{$contact->phone}}" name="phone">
                     <a class="resetLink" href="#"><i class="far fa-window-close"></i></a>
                 </div>
             </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
         </tr>
         <tr>
             <td>EMAIL</td>
@@ -187,15 +82,11 @@
                     <a class="changeLink" href="#"><i class="fab fa-stack-exchange"></i></a>
                 </div>
                 <div class="resetData   align-items-center justify-content-between d-none">
-                    <input class="form-control dataInp" type="email" data-orig="{{$contact->email}}" value="{{$contact->email}}" name="email">
+                    <input class="form-control dataInp" type="email" data-orig="{{$contact->email}}"
+                           value="{{$contact->email}}" name="email">
                     <a class="resetLink" href="#"><i class="far fa-window-close"></i></a>
                 </div>
             </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
         </tr>
         <tr>
             <td>ADDRESS</td>
@@ -204,15 +95,11 @@
                     <a class="changeLink" href="#"><i class="fab fa-stack-exchange"></i></a>
                 </div>
                 <div class="resetData   align-items-center justify-content-between d-none">
-                    <textarea class="form-control dataInp" type="text" data-orig="{{$contact->address}}" value="{{$contact->address}}" name="address">{{$contact->address}}</textarea>
+                    <textarea class="form-control dataInp" type="text" data-orig="{{$contact->address}}"
+                              value="{{$contact->address}}" name="address">{{$contact->address}}</textarea>
                     <a class="resetLink" href="#"><i class="far fa-window-close"></i></a>
                 </div>
             </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
         </tr>
         </tbody>
     </table>
@@ -221,3 +108,61 @@
     <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
     <span>Сохранить измененные данные контакта</span>
 </button>
+
+<div class="table-responsive mt-5">
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <td>Банк</td>
+            <td>Статус</td>
+            <td>CityCode</td>
+            <td>ProductCode</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach($banks as $bank)
+            <tr class="oneBank ">
+                <td>{{$bank->name}}</td>
+                <td></td>
+                <td>
+                    <select name="city" class="bank_city_{{$bank->id}}" data-id="{{$bank->id}}" >
+                        <option value="-1">Выбирите город</option>
+                        @if($bank->cities)
+                            @foreach($bank->cities as $city)
+                                <option value="{{$city->idd}}">{{$city->title}}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </td>
+                <td>
+                    <select name="tariff" class="bank_tariff_{{$bank->id}}" data-id="{{$bank->id}}">
+                        <option value="-1">Тип продукта</option>
+                        @if($bank->tariffs)
+                            @foreach($bank->tariffs as $tariff)
+                                <option value="{{$tariff->idd}}">{{$tariff->title}}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </td>
+                <td>
+                    <button
+                        class="send_bank button_{{$bank->id}}"
+                        data-contact_id="{{$contact->id}}"
+                        data-id="{{$bank->id}}"
+                        disabled class="btn btn-default">ОТПРАВИТЬ</button>
+                </td>
+            </tr>
+        @endforeach
+        </tbody>
+
+    </table>
+</div>
+
+<div class="alert alert-success d-none" id="successAlertReport" role="alert">
+    Заявка отправлена
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+

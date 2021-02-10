@@ -17,6 +17,7 @@
                             <tr>
                                 <th scope="col">Оператор</th>
                                 <th scope="col">Статус</th>
+                                <th scope="col">Email</th>
                                 <th scope="col">Дата / Время</th>
                                 <th scope="col"></th>
                             </tr>
@@ -31,6 +32,9 @@
                                             @else
                                             Заблокирован
                                         @endif
+                                    </td>
+                                    <td>
+                                        {{$operator->email}}
                                     </td>
                                     <td>
                                         {{$operator->lastLoginAt()}}

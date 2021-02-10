@@ -1,6 +1,9 @@
 const {
     default: Axios
 } = require("axios");
+const {
+    ajax
+} = require("jquery");
 
 $(document).ready(function () {
     // работа с клиентом
@@ -44,8 +47,48 @@ $(document).ready(function () {
             .then(() => {
                 console.log('fin')
                 $(this).find('.spinner-border').addClass('d-none');
-                // $(this).prop('disabled', true);
             })
     })
+
+    // банки изменение
+    $('[name="city"],[name="tariff"]').change(function () {
+        let id = $(this).data('id');
+        let city = $('.bank_city_' + id).val();
+        let tariff = $('.bank_tariff_' + id).val();
+        if (tariff !== '-1' && city !== '-1') {
+            $('.button_' + id).prop('disabled', false)
+        } else {
+            $('.button_' + id).prop('disabled', true)
+        }
+    });
+
+    // отправка заявки в банк
+    $('.send_bank').click(function (e) {
+        e.preventDefault();
+        $(this).prop('disabled', true);
+        let id = $(this).data('id');
+        let city = $('.bank_city_' + id).val();
+        let tariff = $('.bank_tariff_' + id).val();
+        let contact_id = $(this).data('contact_id');
+        axios
+            .post("/ajax/contact/sendBankContac", {
+                bank_id: id,
+                city_id: city,
+                tariff_id: tariff,
+                contact_id: contact_id
+            })
+            .then((response) => {
+                if (response.data.suc) {
+                    $('#successAlertReport').removeClass('d-none');
+                    setTimeout(() => {
+                        $('#successAlertReport').addClass('d-none');
+                    }, 3000)
+                }
+            })
+            .catch((err) => {})
+            .then(() => {
+
+            });
+    });
 
 });
