@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Bank;
 use App\Models\Contact;
 
+
 class ContactController extends Controller
 {
     /**
@@ -91,9 +92,11 @@ class ContactController extends Controller
     {
         $contact=Contact::findOrFail($id);
         $banks=Bank::orderBy('sort')->get();
+        $user_id=Auth::user();
         return  view('operanorcontacs.edit',[
             'contact'=>$contact,
-            'banks'=>$banks
+            'banks'=>$banks,
+            'user_id'=>$user_id
         ]);
     }
 

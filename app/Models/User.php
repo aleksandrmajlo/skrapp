@@ -36,11 +36,16 @@ class User extends Authenticatable
     }
 
 
-    public function users()
+    public function banks()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(Bank::class);
     }
 
+
+    public function reports()
+        {
+            return $this->hasMany(Report::class);
+        }
 
     public function scopeActiveoperator($query)
     {

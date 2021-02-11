@@ -236,9 +236,11 @@ class TestController extends Controller
             $response = json_decode($response);
             $resust['idd'] = $response->id;
         } catch (RequestException $e) {
-            echo Psr7\Message::toString($e->getRequest());
+//            echo Psr7\Message::toString($e->getRequest());
             if ($e->hasResponse()) {
-                $resust['input'] = Psr7\Message::toString($e->getResponse());
+                var_dump(Psr7\Message::toString($e->getResponse()));
+                var_dump($e->getResponse());
+//                echo  $resust['input'] = Psr7\Message::toString($e->getResponse());
             }
         }
 

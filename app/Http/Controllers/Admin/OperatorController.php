@@ -10,6 +10,7 @@ class OperatorController extends Controller
 {
 
 
+
     public function index()
     {
         $paginate=config('custom.paginate');

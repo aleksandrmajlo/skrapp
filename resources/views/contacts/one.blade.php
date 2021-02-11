@@ -122,37 +122,73 @@
         </thead>
         <tbody>
         @foreach($banks as $bank)
-            <tr class="oneBank ">
-                <td>{{$bank->name}}</td>
-                <td></td>
-                <td>
-                    <select name="city" class="bank_city_{{$bank->id}}" data-id="{{$bank->id}}" >
-                        <option value="-1">Выбирите город</option>
-                        @if($bank->cities)
-                            @foreach($bank->cities as $city)
-                                <option value="{{$city->idd}}">{{$city->title}}</option>
-                            @endforeach
-                        @endif
-                    </select>
-                </td>
-                <td>
-                    <select name="tariff" class="bank_tariff_{{$bank->id}}" data-id="{{$bank->id}}">
-                        <option value="-1">Тип продукта</option>
-                        @if($bank->tariffs)
-                            @foreach($bank->tariffs as $tariff)
-                                <option value="{{$tariff->idd}}">{{$tariff->title}}</option>
-                            @endforeach
-                        @endif
-                    </select>
-                </td>
-                <td>
-                    <button
-                        class="send_bank button_{{$bank->id}}"
-                        data-contact_id="{{$contact->id}}"
-                        data-id="{{$bank->id}}"
-                        disabled class="btn btn-default">ОТПРАВИТЬ</button>
-                </td>
-            </tr>
+            @if(isset($user_id)&&$bank->users->contains($user_id))
+                <tr class="oneBank ">
+                    <td>{{$bank->name}}</td>
+                    <td></td>
+                    <td>
+                        <select name="city" class="bank_city_{{$bank->id}}" data-id="{{$bank->id}}">
+                            <option value="-1">Выбирите город</option>
+                            @if($bank->cities)
+                                @foreach($bank->cities as $city)
+                                    <option value="{{$city->idd}}">{{$city->title}}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </td>
+                    <td>
+                        <select name="tariff" class="bank_tariff_{{$bank->id}}" data-id="{{$bank->id}}">
+                            <option value="-1">Тип продукта</option>
+                            @if($bank->tariffs)
+                                @foreach($bank->tariffs as $tariff)
+                                    <option value="{{$tariff->idd}}">{{$tariff->title}}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </td>
+                    <td>
+                        <button
+                            class="send_bank button_{{$bank->id}}"
+                            data-contact_id="{{$contact->id}}"
+                            data-id="{{$bank->id}}"
+                            disabled class="btn btn-default">ОТПРАВИТЬ
+                        </button>
+                    </td>
+                </tr>
+                @elseif(!isset($user_id))
+                <tr class="oneBank ">
+                    <td>{{$bank->name}}</td>
+                    <td></td>
+                    <td>
+                        <select name="city" class="bank_city_{{$bank->id}}" data-id="{{$bank->id}}">
+                            <option value="-1">Выбирите город</option>
+                            @if($bank->cities)
+                                @foreach($bank->cities as $city)
+                                    <option value="{{$city->idd}}">{{$city->title}}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </td>
+                    <td>
+                        <select name="tariff" class="bank_tariff_{{$bank->id}}" data-id="{{$bank->id}}">
+                            <option value="-1">Тип продукта</option>
+                            @if($bank->tariffs)
+                                @foreach($bank->tariffs as $tariff)
+                                    <option value="{{$tariff->idd}}">{{$tariff->title}}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                    </td>
+                    <td>
+                        <button
+                            class="send_bank button_{{$bank->id}}"
+                            data-contact_id="{{$contact->id}}"
+                            data-id="{{$bank->id}}"
+                            disabled class="btn btn-default">ОТПРАВИТЬ
+                        </button>
+                    </td>
+                </tr>
+            @endif
         @endforeach
         </tbody>
 

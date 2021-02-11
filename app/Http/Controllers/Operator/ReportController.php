@@ -3,21 +3,25 @@
 namespace App\Http\Controllers\Operator;
 
 use App\Http\Controllers\Controller;
+
+use App\Models\User;
 use App\Models\Bank;
+use App\Models\Report;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $paginate=50;
     public function index()
     {
 
+        $user=Auth::user();
         $banks=Bank::orderBy('sort')->get();
+        $reports=$user->reports()->paginate($this->paginate);
         return view('operatorreports.index',[
+            'reports'=>$reports,
             'banks'=>$banks
         ]);
     }

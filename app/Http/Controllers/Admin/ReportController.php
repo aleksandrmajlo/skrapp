@@ -4,18 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
+use App\Models\Report;
 use Illuminate\Http\Request;
 class ReportController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    protected $paginate=50;
     public function index()
     {
+
         $banks=Bank::orderBy('sort')->get();
+        $reports=Report::orderBy('created_at','desc')->paginate($this->paginate);
         return view('reports.index',[
+            'reports'=>$reports,
             'banks'=>$banks
         ]);
     }

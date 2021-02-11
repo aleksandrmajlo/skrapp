@@ -25,4 +25,11 @@ class Contact extends Model
         return $this->belongsTo('App\Models\User');
     }
 
+
+    public function reports()
+        {
+            return $this->hasMany(Report::class);
+        }
+        
+
 }

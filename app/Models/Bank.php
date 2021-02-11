@@ -22,4 +22,10 @@ class Bank extends Model
         return $this->hasMany(Tariff::class);
     }
 
+
+    public function reports()
+        {
+            return $this->hasMany(Report::class);
+        }
+        
 }
