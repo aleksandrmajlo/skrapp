@@ -68,7 +68,8 @@ class TestController extends Controller
         ]);
         // город
         try {
-            $response = $client->request('GET',
+            $response = $client->request(
+                'GET',
                 $bank_config['city'],
                 ['headers' => $headers]
             )->getBody()->getContents();
@@ -90,12 +91,12 @@ class TestController extends Controller
                         $tariff->save();
                     }
                 }
-
             }
         }
         // тариф
         try {
-            $response = $client->request('GET',
+            $response = $client->request(
+                'GET',
                 $bank_config['tariff'],
                 ['headers' => $headers]
             )->getBody()->getContents();
@@ -136,7 +137,8 @@ class TestController extends Controller
         ]);
         // город
         try {
-            $response = $client->request('GET',
+            $response = $client->request(
+                'GET',
                 $bank_config['city'],
                 ['headers' => $headers]
             )->getBody()->getContents();
@@ -160,7 +162,8 @@ class TestController extends Controller
         }
         // тариф
         try {
-            $response = $client->request('GET',
+            $response = $client->request(
+                'GET',
                 $bank_config['tariff'],
                 ['headers' => $headers]
             )->getBody()->getContents();
@@ -199,19 +202,12 @@ class TestController extends Controller
         $contact_id = 787;
 
         $contact = Contact::find($contact_id);
-        $contact_data = [
-            'full_name' => $contact->fullname,
-            'inn' => $contact->inn,
-            'email' => $contact->email,
-            'phone' => $contact->phone,
-            'tariff' => $tariff_id,
-            'city' => $city->title,
-        ];
+
+
         $bank_config = config('bank.' . $bank_id);
         $headers = [
-            'x-auth-token' => $bank_config['token'],
-            'Accept' => 'application/json',
-            'content-type' => 'multipart/form-data',
+            'content-type: multipart/form-data',
+            'x-auth-token: '.$bank_config['token']
         ];
         $client = new Client([
             'base_uri' => $bank_config['host'],
@@ -225,26 +221,51 @@ class TestController extends Controller
             'idd' => null,
             'input' => null
         ];
+
+        if (env('APP_ENV') === 'testing') {
+            $url = $bank_config['test_add'];
+        } else {
+            $url = $bank_config['test_add'];
+        }
         try {
-            $response = $client->request('POST',
-                $url,
-                [
-                    'headers' => $headers,
-                    'form_params' => $contact_data,
+            $response = $client->post($url, [
+                'headers' => $headers,
+                'multipart' => [
+                    [
+                        'name' => 'full_name',
+                        'contents' => $contact->fullname
+                    ],
+                    [
+                        'name' => 'inn',
+                        'contents' => $contact->inn
+                    ],
+                    [
+                        'name' => 'email',
+                        'contents' => $contact->email
+                    ],
+                    [
+                        'name' => 'phone',
+                        'contents' => $contact->phone
+                    ],
+                    [
+                        'name' => 'tariff',
+                        'contents' => $tariff_id
+                    ],
+                    [
+                        'name' => 'city',
+                        'contents' => $city->title,
+                    ],
                 ]
-            )->getBody()->getContents();
+            ])->getBody()->getContents();;
             $response = json_decode($response);
             $resust['idd'] = $response->id;
+
+
         } catch (RequestException $e) {
-//            echo Psr7\Message::toString($e->getRequest());
+            echo Psr7\Message::toString($e->getRequest());
             if ($e->hasResponse()) {
-                var_dump(Psr7\Message::toString($e->getResponse()));
-                var_dump($e->getResponse());
-//                echo  $resust['input'] = Psr7\Message::toString($e->getResponse());
+                echo Psr7\Message::toString($e->getResponse());
             }
         }
-
     }
-
-
 }

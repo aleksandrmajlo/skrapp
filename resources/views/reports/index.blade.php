@@ -6,7 +6,7 @@
         @include('reports.filter')
         @if(count($reports)>0)
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 mb-3">
                     @foreach($reports as $report)
                         <div class="reportLoopItem">
                             <span>{{$report->created_at}}</span>

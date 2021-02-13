@@ -27,6 +27,7 @@ Route::group(['middleware' => 'roleadmin'], function () {
     // контакты
     Route::resource('contacts', App\Http\Controllers\Admin\ContactController::class);
     // отчеты
+    Route::get('reports-filter', 'App\Http\Controllers\Admin\ReportController@filter')->name('reports-filter');
     Route::resource('reports', App\Http\Controllers\Admin\ReportController::class);
     // настройки
     Route::resource('settings', App\Http\Controllers\Admin\SettingController::class);
@@ -37,6 +38,7 @@ Route::group(['middleware' => 'roleadmin'], function () {
 Route::group(['middleware' => 'roleoperator'], function () {
     Route::get('/dashboardoperator', [App\Http\Controllers\HomeController::class, 'operator'])->name('dashboardoperator');
     // отчеты
+    Route::get('reports-filter-operator', 'App\Http\Controllers\Operator\ReportController@filter')->name('reports-filter-operator');
     Route::resource('operatorreports', App\Http\Controllers\Operator\ReportController::class);
     // контакты
     Route::get('operatorcontacts/search', 'App\Http\Controllers\Operator\ContactController@search')->name('search_operatorcontacts');

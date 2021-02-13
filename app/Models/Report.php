@@ -29,12 +29,8 @@ class Report extends Model
 
      public function getTypeAttribute()
         {
-            if($this->status=='1'){
-                return 'СЧЁТ ОТКРЫТ';
-            }
-            else{
-                return 'АНКЕТА ОТПРАВЛЕНА';
-            }
+            $status=config('reports');
+            return $status[$this->status];
         }
 
 }

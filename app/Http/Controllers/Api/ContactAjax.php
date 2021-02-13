@@ -88,19 +88,10 @@ class ContactAjax extends Controller
         $contact_id = $request->contact_id;
 
         $contact = Contact::find($contact_id);
-        $contact_data = [
-            'full_name' => $contact->fullname,
-            'inn' => $contact->inn,
-            'email' => $contact->email,
-            'phone' => $contact->phone,
-            'tariff' => $tariff_id,
-            'city' => $city->title,
-        ];
         $bank_config = config('bank.' . $bank_id);
         $headers = [
-            'x-auth-token' => $bank_config['token'],
-            'Accept' => 'application/json',
-            'content-type' => 'multipart/form-data',
+            'content-type: multipart/form-data',
+            'x-auth-token: '.$bank_config['token']
         ];
         $client = new Client([
             'base_uri' => $bank_config['host'],
@@ -115,13 +106,35 @@ class ContactAjax extends Controller
             'input' => null
         ];
         try {
-            $response = $client->request('POST',
-                $url,
-                [
-                    'headers' => $headers,
-                    'form_params' => $contact_data,
+            $response = $client->post($url, [
+                'headers' => $headers,
+                'multipart' => [
+                    [
+                        'name' => 'full_name',
+                        'contents' => $contact->fullname
+                    ],
+                    [
+                        'name' => 'inn',
+                        'contents' => $contact->inn
+                    ],
+                    [
+                        'name' => 'email',
+                        'contents' => $contact->email
+                    ],
+                    [
+                        'name' => 'phone',
+                        'contents' => $contact->phone
+                    ],
+                    [
+                        'name' => 'tariff',
+                        'contents' => $tariff_id
+                    ],
+                    [
+                        'name' => 'city',
+                        'contents' => $city->title,
+                    ],
                 ]
-            )->getBody()->getContents();
+            ])->getBody()->getContents();;
             $response = json_decode($response);
             $resust['idd'] = $response->id;
         } catch (RequestException $e) {
@@ -140,6 +153,11 @@ class ContactAjax extends Controller
         $report->input=$resust['input'];
         $report->idd=$resust['idd'];
 
+        if($resust['input']){
+            $report->status=0;
+        }else{
+            $report->status=1;
+        }
         $report->save();
 
         return response()->json([
