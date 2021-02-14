@@ -19,6 +19,30 @@
                                 </thead>
                                 <tbody>
 
+                                <tr>
+                                    <td>День</td>
+                                    <td>{{$reportDateAll}}</td>
+                                    <td>{{$reportDateAllOpen}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Неделя</td>
+                                    <td>{{$reportWeekAll}}</td>
+                                    <td>{{$reportWeekAllOpen}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Месяц</td>
+                                    <td>{{$reportMonthAll}}</td>
+                                    <td>{{$reportMonthAllOpen}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Всего</td>
+                                    <td>{{$reportAll}}</td>
+                                    <td>{{$reportAllOpen}}</td>
+                                </tr>
+
                                 </tbody>
                             </table>
                         </div>

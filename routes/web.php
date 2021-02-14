@@ -32,7 +32,6 @@ Route::group(['middleware' => 'roleadmin'], function () {
     // настройки
     Route::resource('settings', App\Http\Controllers\Admin\SettingController::class);
 
-
 });
 // оператор
 Route::group(['middleware' => 'roleoperator'], function () {
@@ -47,6 +46,7 @@ Route::group(['middleware' => 'roleoperator'], function () {
 // загрузка exel контактов
 Route::post('file-upload', [App\Http\Controllers\Admin\FileUploadController::class, 'fileUploadExcel'])->name('file.upload.excel');
 Route::group(['prefix' => 'ajax'], function () {
+
     Route::post('/operators/authenticationlogs', 'App\Http\Controllers\Api\OperatorController@logs');
     // разрешение для операторов  для работы  с банками
     Route::post('/settings/shippingpermission', 'App\Http\Controllers\Api\ShippingController@permission');
@@ -61,4 +61,4 @@ Route::group(['prefix' => 'ajax'], function () {
 
 });
 // тестовый удалить!!!!!!!!!!!!!!
-Route::get('test','App\Http\Controllers\TestController@index2');
+Route::get('test','App\Http\Controllers\TestController@indexSend');

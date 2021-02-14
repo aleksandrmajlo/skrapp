@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 
 use App\Models\Contact;
+use App\Models\Report;
 use Illuminate\Http\Request;
 
 use App\Models\City;
 use App\Models\Tariff;
+use App\Services\Bank2;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
@@ -187,7 +189,7 @@ class TestController extends Controller
         }
     }
 
-    public function index2(Request $request)
+    public function indexSend(Request $request)
     {
 
         $bank_id = $request->bank_id;
@@ -201,13 +203,19 @@ class TestController extends Controller
         $contact_id = $request->contact_id;
         $contact_id = 787;
 
+
+        switch ($bank_id) {
+            case 2:
+                $resust=Bank2::send($contact_id,$tariff_id,$city);
+                break;
+        }
+        dump($resust);
+        /*
         $contact = Contact::find($contact_id);
-
-
         $bank_config = config('bank.' . $bank_id);
         $headers = [
             'content-type: multipart/form-data',
-            'x-auth-token: '.$bank_config['token']
+            'x-auth-token: ' . $bank_config['token']
         ];
         $client = new Client([
             'base_uri' => $bank_config['host'],
@@ -215,7 +223,7 @@ class TestController extends Controller
         if (env('APP_ENV') === 'testing') {
             $url = $bank_config['test_add'];
         } else {
-            $url = $bank_config['test_add'];
+            $url = $bank_config['add'];
         }
         $resust = [
             'idd' => null,
@@ -262,10 +270,30 @@ class TestController extends Controller
 
 
         } catch (RequestException $e) {
-            echo Psr7\Message::toString($e->getRequest());
+            $resust['input']=Psr7\Message::toString($e->getRequest());
             if ($e->hasResponse()) {
-                echo Psr7\Message::toString($e->getResponse());
+                $resust['input'] =$resust['input']. Psr7\Message::toString($e->getResponse());
             }
         }
+        */
+    }
+
+    public function index_Check()
+    {
+
+        $reports = Report::send()->get();
+        foreach ($reports as $report) {
+            $bank_id = $report->bank_id;
+            switch ($bank_id) {
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    Bank2::check($report);
+                    break;
+            }
+        }
+
     }
 }

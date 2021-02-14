@@ -10,6 +10,7 @@ use App\Models\Report;
 use App\Models\ContactLog;
 
 
+use App\Services\Bank2;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -87,61 +88,10 @@ class ContactAjax extends Controller
         $tariff_id = $request->tariff_id;
         $contact_id = $request->contact_id;
 
-        $contact = Contact::find($contact_id);
-        $bank_config = config('bank.' . $bank_id);
-        $headers = [
-            'content-type: multipart/form-data',
-            'x-auth-token: '.$bank_config['token']
-        ];
-        $client = new Client([
-            'base_uri' => $bank_config['host'],
-        ]);
-        if (env('APP_ENV') === 'testing') {
-            $url = $bank_config['test_add'];
-        } else {
-            $url = $bank_config['test_add'];
-        }
-        $resust = [
-            'idd' => null,
-            'input' => null
-        ];
-        try {
-            $response = $client->post($url, [
-                'headers' => $headers,
-                'multipart' => [
-                    [
-                        'name' => 'full_name',
-                        'contents' => $contact->fullname
-                    ],
-                    [
-                        'name' => 'inn',
-                        'contents' => $contact->inn
-                    ],
-                    [
-                        'name' => 'email',
-                        'contents' => $contact->email
-                    ],
-                    [
-                        'name' => 'phone',
-                        'contents' => $contact->phone
-                    ],
-                    [
-                        'name' => 'tariff',
-                        'contents' => $tariff_id
-                    ],
-                    [
-                        'name' => 'city',
-                        'contents' => $city->title,
-                    ],
-                ]
-            ])->getBody()->getContents();;
-            $response = json_decode($response);
-            $resust['idd'] = $response->id;
-        } catch (RequestException $e) {
-            $resust['input']=Psr7\Message::toString($e->getRequest());
-            if ($e->hasResponse()) {
-                $resust['input'] =$resust['input']. Psr7\Message::toString($e->getResponse());
-            }
+        switch ($bank_id) {
+            case 2:
+                $resust=Bank2::send($contact_id,$tariff_id,$city);
+                break;
         }
 
         $report=new Report;
@@ -152,17 +102,14 @@ class ContactAjax extends Controller
         $report->user_id=Auth::user()->id;
         $report->input=$resust['input'];
         $report->idd=$resust['idd'];
-
         if($resust['input']){
             $report->status=0;
         }else{
             $report->status=1;
         }
         $report->save();
-
         return response()->json([
             'suc' => true
         ]);
-
     }
 }
