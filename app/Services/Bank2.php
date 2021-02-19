@@ -4,18 +4,24 @@
 namespace App\Services;
 
 use App\Models\Contact;
+use App\Models\Dublicate;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7;
+use GuzzleHttp\RequestOptions;
+use Illuminate\Support\Facades\DB;
+
 
 class Bank2
 {
-    private static $bank_id=2;
-    public static function send($contact_id,$tariff_id,$city){
+    private static $bank_id = 2;
+
+    public static function send($contact_id, $tariff_id, $city)
+    {
 
         $contact = Contact::find($contact_id);
-        $bank_config = config('bank.' .self::$bank_id );
+        $bank_config = config('bank.' . self::$bank_id);
         $headers = [
             'content-type: multipart/form-data',
             'x-auth-token: ' . $bank_config['token']
@@ -67,14 +73,14 @@ class Bank2
                         'contents' => $city->title,
                     ],
                 ]
-            ])->getBody()->getContents();;
+            ])->getBody()->getContents();
             $response = json_decode($response);
             $resust['idd'] = $response->id;
 
         } catch (RequestException $e) {
-            $resust['input']=Psr7\Message::toString($e->getRequest());
+            $resust['input'] = Psr7\Message::toString($e->getRequest());
             if ($e->hasResponse()) {
-                $resust['input'] =$resust['input']. Psr7\Message::toString($e->getResponse());
+                $resust['input'] = $resust['input'] . Psr7\Message::toString($e->getResponse());
             }
         }
 
@@ -82,6 +88,7 @@ class Bank2
 
 
     }
+
     public static function check($report)
     {
         $id = $report->idd;
@@ -102,16 +109,121 @@ class Bank2
                 'headers' => $headers
             ])->getBody()->getContents();
             $response = json_decode($response);
-            if($response->status=="created"){
-                $report->status=2;
+            if ($response->status == "created") {
+                $report->status = 2;
                 $report->save();
             }
-        }
-        catch (RequestException $e){
+        } catch (RequestException $e) {
             echo Psr7\Message::toString($e->getRequest());
             if ($e->hasResponse()) {
                 echo Psr7\Message::toString($e->getResponse());
             }
         }
     }
+
+    // отправка запроса на дублирование
+    public static function InnDublicate($inns)
+    {
+        $bank_config = config('bank.' . self::$bank_id);
+        $headers = [
+            'x-auth-token: ' . $bank_config['token'],
+        ];
+        $client = new Client([
+            'base_uri' => $bank_config['host'],
+        ]);
+        if (env('APP_ENV') === 'testing') {
+            $url = $bank_config['inn_dublicate_test'];
+        } else {
+            $url = $bank_config['inn_dublicate'];
+        }
+        try {
+            $response = $client->post($url, [
+                'headers' => $headers,
+                RequestOptions::JSON => ['inns' => $inns],
+            ])->getBody()->getContents();
+            $response = json_decode($response);
+            $duplicate = Dublicate::create([
+                'idd' => $response->id,
+                'inns' => $inns,
+                'bank_id' => self::$bank_id
+            ]);
+        } catch (RequestException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\Message::toString($e->getResponse());
+            }
+        }
+    }
+
+    // проверка отправленной задачи на дубли
+    public static function InnDublicateCheck($duplikate)
+    {
+        $bank_config = config('bank.' . self::$bank_id);
+        $headers = [
+            'x-auth-token: ' . $bank_config['token'],
+        ];
+        $client = new Client([
+            'base_uri' => $bank_config['host'],
+        ]);
+        if (env('APP_ENV') === 'testing') {
+            $url = $bank_config['inn_dublicate_get_test'] . $duplikate->idd;
+        } else {
+            $url = $bank_config['inn_dublicate_get'] . $duplikate->idd;
+        }
+        try {
+            $response = $client->request('GET', $url, [
+                'headers' => $headers
+            ])->getBody()->getContents();
+            $response = json_decode($response);
+            if ($response->status == "done") {
+                $duplikate->status = 1;
+                $duplikate->response = $response;
+                $duplikate->save();
+                $inns = $response->result->inns;
+                if ($inns) {
+                    foreach ($inns as $inn) {
+                        $contacts = Contact::where('inn', $inn->inn)->get();
+                        if ($contacts) {
+                            $message = null;
+                            if (isset($inn->message)) $message = $inn->message;
+                            foreach ($contacts as $contact) {
+                                $r = DB::table('bank_contact')
+                                    ->where('contact_id', $contact->id)
+                                    ->where('bank_id', self::$bank_id)
+                                    ->first();
+                                if ($r) {
+                                    DB::table('bank_contact')
+                                        ->where('contact_id', $contact->id)
+                                        ->where('bank_id', self::$bank_id)
+                                        ->update([
+                                            'contact_id' => $contact->id,
+                                            'bank_id' => self::$bank_id,
+                                            'status' => $inn->inn_status,
+                                            'message' => $message,
+                                        ]);
+                                } else {
+                                    DB::table('bank_contact')->insert([
+                                        'contact_id' => $contact->id,
+                                        'bank_id' => self::$bank_id,
+                                        'status' => $inn->inn_status,
+                                        'message' => $message,
+                                    ]);
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        } catch (RequestException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\Message::toString($e->getResponse());
+            }
+        }
+
+
+    }
+
 }

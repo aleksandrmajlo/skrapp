@@ -194,7 +194,7 @@
 
     </table>
 </div>
-
+<contact-bank contact_id="{{$contact->id}}"></contact-bank>
 <div class="alert alert-success d-none" id="successAlertReport" role="alert">
     Заявка отправлена
     <button type="button" class="close" data-dismiss="alert" aria-label="Close">

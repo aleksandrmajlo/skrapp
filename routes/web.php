@@ -56,9 +56,12 @@ Route::group(['prefix' => 'ajax'], function () {
     // для работы с контактами
     Route::post('/contacts/update', 'App\Http\Controllers\Api\ContactAjax@update');
     Route::post('/contacts/log', 'App\Http\Controllers\Api\ContactAjax@log');
-
+    // отправка заявки в банк
     Route::post('/contact/sendBankContac', 'App\Http\Controllers\Api\ContactAjax@sendBankContac');
+    // опрос банков на дубли
+    Route::post('/contact/sendBankContacDuplicate', 'App\Http\Controllers\Api\ContactAjax@sendBankContacDuplicate');
+
 
 });
 // тестовый удалить!!!!!!!!!!!!!!
-Route::get('test','App\Http\Controllers\TestController@indexSend');
+Route::get('test','App\Http\Controllers\TestController@InnDublicateCheck');

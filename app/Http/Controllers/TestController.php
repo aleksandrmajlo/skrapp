@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\Bank;
 use App\Models\Contact;
+use App\Models\Dublicate;
 use App\Models\Report;
 use Illuminate\Http\Request;
 
@@ -206,7 +208,7 @@ class TestController extends Controller
 
         switch ($bank_id) {
             case 2:
-                $resust=Bank2::send($contact_id,$tariff_id,$city);
+                $resust = Bank2::send($contact_id, $tariff_id, $city);
                 break;
         }
         dump($resust);
@@ -296,4 +298,40 @@ class TestController extends Controller
         }
 
     }
+
+    public function InnDublicate()
+    {
+
+        $banks = Bank::get();
+        $contacts = Contact::get();
+        $inns = [];
+        foreach ($contacts as $key=> $contact) {
+            if($key<4){
+                $inns[] = $contact->inn;
+            }
+        }
+        foreach ($banks as $bank) {
+            switch ($bank->id) {
+                case 2:
+                    Bank2::InnDublicate($inns);
+                    break;
+            }
+        }
+
+    }
+
+
+    public function InnDublicateCheck(){
+        $duplikates=Dublicate::active()->get();
+
+        foreach ($duplikates as $duplikate){
+            switch ($duplikate->bank_id) {
+                case 2:
+                    Bank2::InnDublicateCheck($duplikate);
+                    break;
+            }
+        }
+
+    }
+
 }

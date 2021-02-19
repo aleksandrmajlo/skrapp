@@ -11,6 +11,7 @@ use Yadahan\AuthenticationLog\AuthenticationLogable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, AuthenticationLogable;
+    
     protected $fillable = [
         'name',
         'email',

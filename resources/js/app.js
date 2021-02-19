@@ -2,6 +2,10 @@ require('./bootstrap');
 require('./common');
 window.Vue = require('vue');
 
+import VueSweetalert2 from 'vue-sweetalert2';
+import 'sweetalert2/dist/sweetalert2.min.css';
+Vue.use(VueSweetalert2);
+
 import Vue from 'vue/dist/vue.esm.browser';
 import 'vue-loaders/dist/vue-loaders.css';
 import VueLoaders from 'vue-loaders';
@@ -15,8 +19,11 @@ Vue.component('authentication-log', require('./components/operator/Authenticatio
 Vue.component('shipping-permission', require('./components/settings/ShippingPermission.vue').default);
 Vue.component('setting-admin', require('./components/settings/SettingAdmin.vue').default);
 
-// контакты лог
+// контакты
+//лог
 Vue.component('contact-log', require('./components/contacts/ContactLog.vue').default);
+// опросить банки
+Vue.component('contact-bank', require('./components/contacts/ContactBank.vue').default);
 
 const app = new Vue({
     el: '#app',

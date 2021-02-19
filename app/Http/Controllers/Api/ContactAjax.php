@@ -4,6 +4,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bank;
 use App\Models\City;
 use App\Models\Contact;
 use App\Models\Report;
@@ -21,6 +22,7 @@ use GuzzleHttp\Psr7;
 
 class ContactAjax extends Controller
 {
+    // обновление контактов
     public function update(Request $request)
     {
         $contact = Contact::find($request->id);
@@ -29,21 +31,21 @@ class ContactAjax extends Controller
         $log->contact_id = $request->id;
         $log->type = '2';
         $log->ip = $request->ip();
-        $log->input =  json_encode([
-            'inn'=>$contact->inn,
-            'phone'=>$contact->phone,
-            'fullname'=>$contact->fullname,
-            'organization'=>$contact->organization,
-            'email'=>$contact->email,
-            'address'=>$contact->address,
+        $log->input = json_encode([
+            'inn' => $contact->inn,
+            'phone' => $contact->phone,
+            'fullname' => $contact->fullname,
+            'organization' => $contact->organization,
+            'email' => $contact->email,
+            'address' => $contact->address,
         ]);
         $log->input_new = json_encode([
-            'inn'=>$request->inn,
-            'phone'=>$request->phone,
-            'fullname'=>$request->fullname,
-            'organization'=>$request->organization,
-            'email'=>$request->email,
-            'address'=>$request->address,
+            'inn' => $request->inn,
+            'phone' => $request->phone,
+            'fullname' => $request->fullname,
+            'organization' => $request->organization,
+            'email' => $request->email,
+            'address' => $request->address,
         ]);
         $log->save();
 
@@ -70,7 +72,7 @@ class ContactAjax extends Controller
                 'input_new' => json_decode($contactlog->input_new),
                 'type' => $config[$contactlog->type],
                 'user' => $contactlog->user->email,
-                'date'=>$contactlog->created_at->format('d-m-Y h:i:s')
+                'date' => $contactlog->created_at->format('d-m-Y h:i:s')
             ];
         }
         return response()->json([
@@ -80,7 +82,8 @@ class ContactAjax extends Controller
     }
 
     // отправка данных в банк
-    public  function  sendBankContac(Request $request){
+    public function sendBankContac(Request $request)
+    {
 
         $bank_id = $request->bank_id;
         $city_id = $request->city_id;
@@ -90,26 +93,43 @@ class ContactAjax extends Controller
 
         switch ($bank_id) {
             case 2:
-                $resust=Bank2::send($contact_id,$tariff_id,$city);
+                $resust = Bank2::send($contact_id, $tariff_id, $city);
                 break;
         }
 
-        $report=new Report;
-        $report->bank_id=$request->bank_id;
-        $report->city=$city->title;
-        $report->tariff_id=$request->tariff_id;
-        $report->contact_id=$request->contact_id;
-        $report->user_id=Auth::user()->id;
-        $report->input=$resust['input'];
-        $report->idd=$resust['idd'];
-        if($resust['input']){
-            $report->status=0;
-        }else{
-            $report->status=1;
+        $report = new Report;
+        $report->bank_id = $request->bank_id;
+        $report->city = $city->title;
+        $report->tariff_id = $request->tariff_id;
+        $report->contact_id = $request->contact_id;
+        $report->user_id = Auth::user()->id;
+        $report->input = $resust['input'];
+        $report->idd = $resust['idd'];
+        if ($resust['input']) {
+            $report->status = 0;
+        } else {
+            $report->status = 1;
         }
         $report->save();
         return response()->json([
             'suc' => true
         ]);
+    }
+
+    // проверка на дубли отправка заявки
+    public function sendBankContacDuplicate(Request $request)
+    {
+        $contact_id = $request->contact_id;
+        $contact = Contact::find($contact_id);
+        $inns = [$contact->inn];
+        $banks = Bank::get();
+        foreach ($banks as $bank) {
+            switch ($bank->id) {
+                case 2:
+                    Bank2::InnDublicate($inns);
+                    break;
+            }
+        }
+        response()->json(['suc'=>true]);
     }
 }
