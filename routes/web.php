@@ -35,6 +35,7 @@ Route::group(['middleware' => 'roleadmin'], function () {
 });
 // оператор
 Route::group(['middleware' => 'roleoperator'], function () {
+
     Route::get('/dashboardoperator', [App\Http\Controllers\HomeController::class, 'operator'])->name('dashboardoperator');
     // отчеты
     Route::get('reports-filter-operator', 'App\Http\Controllers\Operator\ReportController@filter')->name('reports-filter-operator');
@@ -64,4 +65,6 @@ Route::group(['prefix' => 'ajax'], function () {
 
 });
 // тестовый удалить!!!!!!!!!!!!!!
-Route::get('test','App\Http\Controllers\TestController@InnDublicateCheck');
+// проверка статуса отправленной заявки
+Route::get('test','App\Http\Controllers\TestController@index_Check');
+//Route::get('test','App\Http\Controllers\TestController@InnDublicateCheck');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Operator;
 
 use App\Http\Controllers\Controller;
+use App\Services\BankContact2;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Bank;
@@ -90,23 +91,31 @@ class ContactController extends Controller
      */
     public function edit($id)
     {
-        $contact=Contact::findOrFail($id);
-        $banks=Bank::orderBy('sort')->get();
-        $user_id=Auth::user();
-        return  view('operanorcontacs.edit',[
-            'contact'=>$contact,
-            'banks'=>$banks,
-            'user_id'=>$user_id
+        $contact = Contact::findOrFail($id);
+        $banks = Bank::orderBy('sort')->get();
+        $user_id = Auth::user();
+        $bank_data = [];
+        foreach ($banks as $bank) {
+            switch ($bank->id) {
+                case 2:
+                    $bank_data[$bank->id] = BankContact2::ContactData($bank, $contact);
+                    break;
+                default:
+                    $bank_data[$bank->id]=[
+                        'value'=>0
+                    ];
+                   ;
+            }
+        }
+        return view('operanorcontacs.edit', [
+            'contact' => $contact,
+            'banks' => $banks,
+            'bank_data' => $bank_data,
+            'user_id' => $user_id
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
         //

@@ -4,16 +4,14 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-
 class Kernel extends ConsoleKernel
 {
-    /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
-     */
+
     protected $commands = [
-        //
+//        Commands\StatusReport::class,
+//        Commands\Dublicate::class,
+//        Commands\BankOtkrytie::class,
+        Commands\Test::class
     ];
 
     /**
@@ -24,10 +22,20 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('otkrytie:cron')->everyFiveMinutes();
-         // каждые пять минут
-//         $schedule->command('otkrytie:cron')->dailyAt('08:00');
-         $schedule->command('statusreport:cron')->dailyAt('07:30');
+        // каждые пять минут
+
+        //получение городов и тарифов банк открытие
+//         $schedule->command('otkrytie:cron')->everyFiveMinutes();
+        //$schedule->command('otkrytie:cron')->dailyAt('08:00');
+
+        // проверка статуса отправленных заявок
+//         $schedule->command('statusreport:cron')->dailyAt('07:30');
+
+         // проверка на дубли
+//        $schedule->command('duplicate:check')->everyFiveMinutes();
+
+        // тэстовая комманда
+        $schedule->command('test:test')->everyFiveMinutes();
     }
 
     /**

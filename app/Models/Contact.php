@@ -30,6 +30,10 @@ class Contact extends Model
         {
             return $this->hasMany(Report::class);
         }
-        
+
+    public function banks()
+    {
+        return $this->belongsToMany(Bank::class)->withPivot('status', 'message', 'created_at','updated_at');
+    }
 
 }

@@ -6,17 +6,21 @@ namespace App\Services;
 use App\Models\Contact;
 use App\Models\Dublicate;
 
+use App\Models\Log;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7;
 use GuzzleHttp\RequestOptions;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 
 class Bank2
 {
     private static $bank_id = 2;
-
+    // отправка заяки  в банк!!!!!!
     public static function send($contact_id, $tariff_id, $city)
     {
 
@@ -76,12 +80,35 @@ class Bank2
             ])->getBody()->getContents();
             $response = json_decode($response);
             $resust['idd'] = $response->id;
+            // логирование
+            $log = Log::create([
+                'request' => [
+                    'contact_id' => $contact_id,
+                    'tariff_id' => $tariff_id,
+                    'city' => $city->title,
+                    'bank_id' => self::$bank_id
+                ],
+                'answer' => ['idd' => $response->id],
+                'type' => 'POST ' . $bank_config['host'] . $url,
+            ]);
 
         } catch (RequestException $e) {
+
             $resust['input'] = Psr7\Message::toString($e->getRequest());
             if ($e->hasResponse()) {
                 $resust['input'] = $resust['input'] . Psr7\Message::toString($e->getResponse());
             }
+            // логирование
+            $log = Log::create([
+                'request' => [
+                    'contact_id' => $contact_id,
+                    'tariff_id' => $tariff_id,
+                    'bank_id' => self::$bank_id,
+                    'city' => $city->title,
+                ],
+                'answer' => ['error' => $resust['input']],
+                'type' => 'POST ' . $bank_config['host'] . $url,
+            ]);
         }
 
         return $resust;
@@ -89,6 +116,7 @@ class Bank2
 
     }
 
+    // проверка статуса отправленной заявки
     public static function check($report)
     {
         $id = $report->idd;
@@ -109,15 +137,58 @@ class Bank2
                 'headers' => $headers
             ])->getBody()->getContents();
             $response = json_decode($response);
+            // логирование
+            $log = Log::create([
+                'request' => [
+                    'report' => $report,
+                    'bank_id' => self::$bank_id
+                ],
+                'answer' => $response,
+                'type' => 'GET ' . $bank_config['host'] . $url,
+            ]);
+
             if ($response->status == "created") {
                 $report->status = 2;
                 $report->save();
             }
-        } catch (RequestException $e) {
-            echo Psr7\Message::toString($e->getRequest());
-            if ($e->hasResponse()) {
-                echo Psr7\Message::toString($e->getResponse());
+
+            $r = DB::table('bank_contact')
+                ->where('contact_id', $report->contact_id)
+                ->where('bank_id', self::$bank_id)
+                ->first();
+            if ($r) {
+                DB::table('bank_contact')
+                    ->where('contact_id', $report->contact_id)
+                    ->where('bank_id', self::$bank_id)
+                    ->update([
+                        'status' => $response->status,
+                        'message' => $response->label,
+                    ]);
+            } else {
+                DB::table('bank_contact')->insert([
+                    'contact_id' => $report->contact_id,
+                    'bank_id' => self::$bank_id,
+                    'status' => $response->status,
+                    'message' => $response->label,
+                    'created_at' => Carbon::now()
+                ]);
             }
+        } catch (RequestException $e) {
+            $error= Psr7\Message::toString($e->getRequest());
+            if ($e->hasResponse()) {
+                $error.= Psr7\Message::toString($e->getResponse());
+            }
+
+            // логирование
+            $log = Log::create([
+                'request' => [
+                    'report' => $report,
+                    'bank_id' => self::$bank_id
+                ],
+                'answer' =>['error'=>$error],
+                'type' => 'GET ' . $bank_config['host'] . $url,
+            ]);
+
         }
     }
 
@@ -142,16 +213,26 @@ class Bank2
                 RequestOptions::JSON => ['inns' => $inns],
             ])->getBody()->getContents();
             $response = json_decode($response);
+            $log = Log::create([
+                'request' => ['inns' => $inns],
+                'answer' => $response,
+                'type' => 'POST ' . $bank_config['host'] . $url,
+            ]);
             $duplicate = Dublicate::create([
                 'idd' => $response->id,
                 'inns' => $inns,
                 'bank_id' => self::$bank_id
             ]);
         } catch (RequestException $e) {
-            echo Psr7\Message::toString($e->getRequest());
+            $error = Psr7\Message::toString($e->getRequest());
             if ($e->hasResponse()) {
-                echo Psr7\Message::toString($e->getResponse());
+                $error .= Psr7\Message::toString($e->getResponse());
             }
+            $log = Log::create([
+                'request' => ['inns' => $inns],
+                'answer' => ['error' => $error],
+                'type' => 'POST ' . $bank_config['host'] . $url,
+            ]);
         }
     }
 
@@ -180,6 +261,12 @@ class Bank2
                 $duplikate->response = $response;
                 $duplikate->save();
                 $inns = $response->result->inns;
+                // логирование
+                $log = Log::create([
+                    'request' => ['idd' => $duplikate->idd],
+                    'answer' => $response,
+                    'type' => 'GET ' . $bank_config['host'] . $url,
+                ]);
                 if ($inns) {
                     foreach ($inns as $inn) {
                         $contacts = Contact::where('inn', $inn->inn)->get();
@@ -196,8 +283,8 @@ class Bank2
                                         ->where('contact_id', $contact->id)
                                         ->where('bank_id', self::$bank_id)
                                         ->update([
-                                            'contact_id' => $contact->id,
-                                            'bank_id' => self::$bank_id,
+                                            // 'contact_id' => $contact->id,
+                                            // 'bank_id' => self::$bank_id,
                                             'status' => $inn->inn_status,
                                             'message' => $message,
                                         ]);
@@ -207,6 +294,7 @@ class Bank2
                                         'bank_id' => self::$bank_id,
                                         'status' => $inn->inn_status,
                                         'message' => $message,
+                                        'created_at' => Carbon::now()
                                     ]);
                                 }
                             }
@@ -217,10 +305,16 @@ class Bank2
 
             }
         } catch (RequestException $e) {
-            echo Psr7\Message::toString($e->getRequest());
+            $error = Psr7\Message::toString($e->getRequest());
             if ($e->hasResponse()) {
-                echo Psr7\Message::toString($e->getResponse());
+                $error .= Psr7\Message::toString($e->getResponse());
             }
+            // логирование
+            $log = Log::create([
+                'request' => ['idd' => $duplikate->idd],
+                'answer' => ['error' => $error],
+                'type' => 'GET ' . $bank_config['host'] . $url,
+            ]);
         }
 
 

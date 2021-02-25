@@ -27,7 +27,7 @@ class StatusReport extends Command
      *
      * @var string
      */
-    protected $description = 'Status Report';
+    protected $description = 'проверка статуса отправленных заявок';
 
     /**
      * Create a new command instance.

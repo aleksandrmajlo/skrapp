@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+
 class Bank extends Model
 {
     use HasFactory;
@@ -13,19 +14,27 @@ class Bank extends Model
     {
         return $this->belongsToMany(User::class);
     }
+    public function contacts()
+    {
+        return $this->belongsToMany(Contact::class)->withPivot('status', 'message', 'created_at','updated_at');
+    }
 
-    public  function  cities(){
+    public function cities()
+    {
         return $this->hasMany(City::class);
     }
 
-    public  function  tariffs(){
+    public function tariffs()
+    {
         return $this->hasMany(Tariff::class);
     }
 
 
     public function reports()
-        {
-            return $this->hasMany(Report::class);
-        }
-        
+    {
+        return $this->hasMany(Report::class);
+    }
+
+
+
 }

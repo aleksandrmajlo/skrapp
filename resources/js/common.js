@@ -2,6 +2,10 @@ const {
     default: Axios
 } = require("axios");
 const {
+    default:Swal
+} = require("sweetalert2");
+
+const {
     ajax
 } = require("jquery");
 
@@ -48,7 +52,7 @@ $(document).ready(function () {
                 console.log('fin')
                 $(this).find('.spinner-border').addClass('d-none');
             })
-    })
+    });
 
     // банки изменение
     $('[name="city"],[name="tariff"]').change(function () {
@@ -79,10 +83,10 @@ $(document).ready(function () {
             })
             .then((response) => {
                 if (response.data.suc) {
-                    $('#successAlertReport').removeClass('d-none');
-                    setTimeout(() => {
-                        $('#successAlertReport').addClass('d-none');
-                    }, 3000)
+                    Swal.fire({
+                        icon: 'success',
+                        text: 'Заявка отправлена!',
+                    });
                 }
             })
             .catch((err) => {})

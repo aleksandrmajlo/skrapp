@@ -319,11 +319,8 @@ class TestController extends Controller
         }
 
     }
-
-
     public function InnDublicateCheck(){
         $duplikates=Dublicate::active()->get();
-
         foreach ($duplikates as $duplikate){
             switch ($duplikate->bank_id) {
                 case 2:
@@ -331,7 +328,6 @@ class TestController extends Controller
                     break;
             }
         }
-
     }
 
 }
