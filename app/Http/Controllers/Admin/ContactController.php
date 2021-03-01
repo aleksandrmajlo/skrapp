@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
 use App\Models\Contact;
+use App\Services\BankContact2;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
@@ -28,23 +29,12 @@ class ContactController extends Controller
 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
@@ -60,11 +50,24 @@ class ContactController extends Controller
     {
         $contact=Contact::findOrFail($id);
         $banks=Bank::orderBy('sort')->get();
+        $bank_data = [];
+        foreach ($banks as $bank) {
+            switch ($bank->id) {
+                case 2:
+                    $bank_data[$bank->id] = BankContact2::ContactData($bank, $contact);
+                    break;
+                default:
+                    $bank_data[$bank->id]=[
+                        'value'=>0
+                    ];
+                    ;
+            }
+        }
         return  view('contacts.edit',[
             'contact'=>$contact,
+            'bank_data' => $bank_data,
             'banks'=>$banks
         ]);
-
     }
 
     /**

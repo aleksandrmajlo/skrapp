@@ -146,32 +146,31 @@ class Bank2
                 'answer' => $response,
                 'type' => 'GET ' . $bank_config['host'] . $url,
             ]);
-
+            // если статус создана -  только тогда  пишем
             if ($response->status == "created") {
                 $report->status = 2;
                 $report->save();
-            }
-
-            $r = DB::table('bank_contact')
-                ->where('contact_id', $report->contact_id)
-                ->where('bank_id', self::$bank_id)
-                ->first();
-            if ($r) {
-                DB::table('bank_contact')
+                $r = DB::table('bank_contact')
                     ->where('contact_id', $report->contact_id)
                     ->where('bank_id', self::$bank_id)
-                    ->update([
+                    ->first();
+                if ($r) {
+                    DB::table('bank_contact')
+                        ->where('contact_id', $report->contact_id)
+                        ->where('bank_id', self::$bank_id)
+                        ->update([
+                            'status' => $response->status,
+                            'message' => $response->label,
+                        ]);
+                } else {
+                    DB::table('bank_contact')->insert([
+                        'contact_id' => $report->contact_id,
+                        'bank_id' => self::$bank_id,
                         'status' => $response->status,
                         'message' => $response->label,
+                        'created_at' => Carbon::now()
                     ]);
-            } else {
-                DB::table('bank_contact')->insert([
-                    'contact_id' => $report->contact_id,
-                    'bank_id' => self::$bank_id,
-                    'status' => $response->status,
-                    'message' => $response->label,
-                    'created_at' => Carbon::now()
-                ]);
+                }
             }
         } catch (RequestException $e) {
             $error= Psr7\Message::toString($e->getRequest());

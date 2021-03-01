@@ -21,6 +21,12 @@ return [
          'city'=>'/api/v2/dictionaries/city',
          'tariff'=>'/api/v2/dictionaries/tariff',
 
+          'status'=>[
+              'created'=>3,
+              'success'=>1,
+              'fail'=>1
+          ]
+
     ]
 
 ];

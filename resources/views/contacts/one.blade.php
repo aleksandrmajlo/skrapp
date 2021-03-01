@@ -163,10 +163,17 @@
                         @endif
                     </td>
                 </tr>
+
             @elseif(!isset($user_id))
                 <tr class="oneBank ">
                     <td>{{$bank->name}}</td>
-                    <td></td>
+                    <td>
+                        {{$bank_data[$bank->id]['value']}}
+                        @if($bank_data[$bank->id]['value']>0)
+                            <br>
+                            {{$bank_data[$bank->id]['date']}}
+                        @endif
+                    </td>
                     <td>
                         <select name="city" class="bank_city_{{$bank->id}}" data-id="{{$bank->id}}">
                             <option value="-1">Выбирите город</option>
@@ -188,12 +195,14 @@
                         </select>
                     </td>
                     <td>
-                        <button
-                            class="send_bank button_{{$bank->id}}"
-                            data-contact_id="{{$contact->id}}"
-                            data-id="{{$bank->id}}"
-                            disabled class="btn btn-default">ОТПРАВИТЬ
-                        </button>
+                        @if($bank_data[$bank->id]['value']===0)
+                            <button
+                                class="send_bank button_{{$bank->id}}"
+                                data-contact_id="{{$contact->id}}"
+                                data-id="{{$bank->id}}"
+                                disabled class="btn btn-default">ОТПРАВИТЬ
+                            </button>
+                        @endif
                     </td>
                 </tr>
             @endif

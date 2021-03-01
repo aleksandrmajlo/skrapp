@@ -18,7 +18,6 @@ Route::get('/no-access', function () {
     return view('no-access');
 });
 Auth::routes(['register' => false]);
-
 Route::group(['middleware' => 'roleadmin'], function () {
 
     Route::get('/dashboardadmin', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboardadmin');
@@ -62,9 +61,15 @@ Route::group(['prefix' => 'ajax'], function () {
     // опрос банков на дубли
     Route::post('/contact/sendBankContacDuplicate', 'App\Http\Controllers\Api\ContactAjax@sendBankContacDuplicate');
 
-
 });
 // тестовый удалить!!!!!!!!!!!!!!
 // проверка статуса отправленной заявки
 Route::get('test','App\Http\Controllers\TestController@index_Check');
 //Route::get('test','App\Http\Controllers\TestController@InnDublicateCheck');
+
+// получение городов и тарифов по крону
+Route::get('cron_city','App\Http\Controllers\CronController@cron_city');
+//  проверка статуса отправленных заявок
+Route::get('cron_statusreport','App\Http\Controllers\CronController@cron_statusreport');
+//  проверка на дубли отправленных заявок
+Route::get('cron_duplicate_check','App\Http\Controllers\CronController@cron_duplicate_check');
