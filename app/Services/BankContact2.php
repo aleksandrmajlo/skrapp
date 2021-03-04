@@ -27,11 +27,27 @@ class BankContact2
         $bank_config=$bank_config_all[self::$bank_id];
 
         $r= $bank->contacts()->where('id',$contact->id )->first();
+
         if($r){
+            // это для дублей
             if(isset($bank_config["status"][$r->pivot->status])){
+                $statusText=null;
+                if(isset($bank_config['statusText'][$r->pivot->status])){
+                    $statusText=$bank_config['statusText'][$r->pivot->status];
+                }
                 $bank_data=[
-                    'date'=>$r->pivot->created_at,
-                    'value'=>$bank_config["status"][$r->pivot->status]
+                    'date'=>$r->pivot->updated_at,
+                    'value'=>$bank_config["status"][$r->pivot->status],
+                    'status'=>$r->pivot->status,
+                    'statusText'=>$statusText
+                ];
+            }elseif(isset($bank_config['statusText'][$r->pivot->status])){
+                // при проверки заявки
+                $bank_data=[
+                    'date'=>$r->pivot->updated_at,
+                    'value'=>2,
+                    'status'=>$r->pivot->status,
+                    'statusText'=>$bank_config['statusText'][$r->pivot->status]
                 ];
             }
         }else{

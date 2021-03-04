@@ -131,6 +131,17 @@
                             <br>
                             {{$bank_data[$bank->id]['date']}}
                         @endif
+                        @if(isset($bank_data[$bank->id]['status']))
+                            <p class="text-danger">
+                                {{$bank_data[$bank->id]['status']}}
+                            </p>
+                        @endif
+                        @if(isset($bank_data[$bank->id]['statusText']))
+                            <p class="text-danger">
+                                {{$bank_data[$bank->id]['statusText']['text']}}<br>
+                                {{$bank_data[$bank->id]['statusText']['type']}}
+                            </p>
+                        @endif
                     </td>
                     <td>
                         <select name="city" class="bank_city_{{$bank->id}}" data-id="{{$bank->id}}">
@@ -172,6 +183,17 @@
                         @if($bank_data[$bank->id]['value']>0)
                             <br>
                             {{$bank_data[$bank->id]['date']}}
+                        @endif
+                        @if(isset($bank_data[$bank->id]['status']))
+                           <p class="text-danger">
+                               {{$bank_data[$bank->id]['status']}}
+                           </p>
+                        @endif
+                        @if(isset($bank_data[$bank->id]['statusText']))
+                           <p class="text-danger">
+                               {{$bank_data[$bank->id]['statusText']['text']}}<br>
+                               {{$bank_data[$bank->id]['statusText']['type']}}
+                           </p>
                         @endif
                     </td>
                     <td>

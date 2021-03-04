@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 class Bank2
 {
     private static $bank_id = 2;
+
     // отправка заяки  в банк!!!!!!
     public static function send($contact_id, $tariff_id, $city)
     {
@@ -33,11 +34,13 @@ class Bank2
         $client = new Client([
             'base_uri' => $bank_config['host'],
         ]);
-        if (env('APP_ENV') === 'testing') {
-            $url = $bank_config['test_add'];
-        } else {
-            $url = $bank_config['add'];
-        }
+
+//        if (env('APP_ENV') === 'testing') {
+//            $url = $bank_config['test_add'];
+//        } else {
+//            $url = $bank_config['add'];
+//        }
+
         $resust = [
             'idd' => null,
             'input' => null
@@ -46,8 +49,9 @@ class Bank2
         if (env('APP_ENV') === 'testing') {
             $url = $bank_config['test_add'];
         } else {
-            $url = $bank_config['test_add'];
+            $url = $bank_config['add'];
         }
+
         try {
             $response = $client->post($url, [
                 'headers' => $headers,
@@ -121,6 +125,8 @@ class Bank2
     {
         $id = $report->idd;
         $bank_config = config('bank.' . $report->bank_id);
+
+
         $headers = [
             'x-auth-token: ' . $bank_config['token']
         ];
@@ -146,36 +152,43 @@ class Bank2
                 'answer' => $response,
                 'type' => 'GET ' . $bank_config['host'] . $url,
             ]);
-            // если статус создана -  только тогда  пишем
-            if ($response->status == "created") {
-                $report->status = 2;
-                $report->save();
-                $r = DB::table('bank_contact')
+            // логирование end
+            $status = 2;
+            if (isset($bank_config['statusText'][$response->status])) {
+                $status = $bank_config['statusText'][$response->status]["status"];
+            }
+            $report->status = $status;
+            $report->save();
+
+            $r = DB::table('bank_contact')
+                ->where('contact_id', $report->contact_id)
+                ->where('bank_id', self::$bank_id)
+                ->first();
+
+            if ($r) {
+                DB::table('bank_contact')
                     ->where('contact_id', $report->contact_id)
                     ->where('bank_id', self::$bank_id)
-                    ->first();
-                if ($r) {
-                    DB::table('bank_contact')
-                        ->where('contact_id', $report->contact_id)
-                        ->where('bank_id', self::$bank_id)
-                        ->update([
-                            'status' => $response->status,
-                            'message' => $response->label,
-                        ]);
-                } else {
-                    DB::table('bank_contact')->insert([
-                        'contact_id' => $report->contact_id,
-                        'bank_id' => self::$bank_id,
+                    ->update([
                         'status' => $response->status,
                         'message' => $response->label,
-                        'created_at' => Carbon::now()
+                        'updated_at' => Carbon::now()
                     ]);
-                }
+            } else {
+                DB::table('bank_contact')->insert([
+                    'contact_id' => $report->contact_id,
+                    'bank_id' => self::$bank_id,
+                    'status' => $response->status,
+                    'message' => $response->label,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
             }
+
         } catch (RequestException $e) {
-            $error= Psr7\Message::toString($e->getRequest());
+            $error = Psr7\Message::toString($e->getRequest());
             if ($e->hasResponse()) {
-                $error.= Psr7\Message::toString($e->getResponse());
+                $error .= Psr7\Message::toString($e->getResponse());
             }
 
             // логирование
@@ -184,7 +197,7 @@ class Bank2
                     'report' => $report,
                     'bank_id' => self::$bank_id
                 ],
-                'answer' =>['error'=>$error],
+                'answer' => ['error' => $error],
                 'type' => 'GET ' . $bank_config['host'] . $url,
             ]);
 
@@ -282,10 +295,9 @@ class Bank2
                                         ->where('contact_id', $contact->id)
                                         ->where('bank_id', self::$bank_id)
                                         ->update([
-                                            // 'contact_id' => $contact->id,
-                                            // 'bank_id' => self::$bank_id,
                                             'status' => $inn->inn_status,
                                             'message' => $message,
+                                            'updated_at' => Carbon::now()
                                         ]);
                                 } else {
                                     DB::table('bank_contact')->insert([
@@ -293,7 +305,9 @@ class Bank2
                                         'bank_id' => self::$bank_id,
                                         'status' => $inn->inn_status,
                                         'message' => $message,
-                                        'created_at' => Carbon::now()
+                                        'created_at' => Carbon::now(),
+                                        'updated_at' => Carbon::now()
+
                                     ]);
                                 }
                             }
