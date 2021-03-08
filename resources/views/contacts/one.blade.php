@@ -126,22 +126,7 @@
                 <tr class="oneBank ">
                     <td>{{$bank->name}}</td>
                     <td class="text-center">
-                        {{$bank_data[$bank->id]['value']}}
-                        @if($bank_data[$bank->id]['value']>0)
-                            <br>
-                            {{$bank_data[$bank->id]['date']}}
-                        @endif
-                        @if(isset($bank_data[$bank->id]['status']))
-                            <p class="text-danger">
-                                {{$bank_data[$bank->id]['status']}}
-                            </p>
-                        @endif
-                        @if(isset($bank_data[$bank->id]['statusText']))
-                            <p class="text-danger">
-                                {{$bank_data[$bank->id]['statusText']['text']}}<br>
-                                {{$bank_data[$bank->id]['statusText']['type']}}
-                            </p>
-                        @endif
+                        @include('contacts.onebank')
                     </td>
                     <td>
                         <select name="city" class="bank_city_{{$bank->id}}" data-id="{{$bank->id}}">
@@ -178,23 +163,8 @@
             @elseif(!isset($user_id))
                 <tr class="oneBank ">
                     <td>{{$bank->name}}</td>
-                    <td>
-                        {{$bank_data[$bank->id]['value']}}
-                        @if($bank_data[$bank->id]['value']>0)
-                            <br>
-                            {{$bank_data[$bank->id]['date']}}
-                        @endif
-                        @if(isset($bank_data[$bank->id]['status']))
-                           <p class="text-danger">
-                               {{$bank_data[$bank->id]['status']}}
-                           </p>
-                        @endif
-                        @if(isset($bank_data[$bank->id]['statusText']))
-                           <p class="text-danger">
-                               {{$bank_data[$bank->id]['statusText']['text']}}<br>
-                               {{$bank_data[$bank->id]['statusText']['type']}}
-                           </p>
-                        @endif
+                    <td class="text-center">
+                        @include('contacts.onebank')
                     </td>
                     <td>
                         <select name="city" class="bank_city_{{$bank->id}}" data-id="{{$bank->id}}">

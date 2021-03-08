@@ -21,178 +21,205 @@ return [
          'city'=>'/api/v2/dictionaries/city',
          'tariff'=>'/api/v2/dictionaries/tariff',
 
-          'status'=>[
-              'created'=>3,
-              'success'=>0,
-              'fail'=>1
-          ],
 
          'statusText'=>[
 
+              'not'=>[
+                  'text'=>'Проверка отсутствует',
+                  'type'=>''
+              ],
+
                'success'=>[
-                   'text'=>'Проверка пройдена',
-                   'type'=>'Проверка на дубль'
+                   'text'=>'НЕТ В СИСТЕМЕ (проверка выполнена, анкеты нет в банке)',
+                   'type'=>'Проверка на дубль',
+                   'status'=>0
                ] ,
 
                'fail'=>[
-                   'text'=>'Заявка есть. Проверка не пройдена',
-                   'type'=>'Проверка на дубль'
+                   'text'=>'Заявка есть. Проверка не пройдена(Отклонена. Дубль)',
+                   'type'=>'Проверка на дубль',
+                   'status'=>1
                ] ,
 
                'error'=>[
                    'text'=>'Ошибка при проверке',
-                   'type'=>'Проверка на дубль'
+                   'type'=>'Проверка на дубль',
+                   'status'=>1
                ] ,
 
 
                'inqueue'=>[
                    'text'=>'Отправляем в банк',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>3,
+                   'statusReport'=>1
                ] ,
 
 
                'new'=>[
                    'text'=>'Обрабатывается',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>3,
+                   'statusReport'=>1
                ] ,
 
 
                'exported'=>[
                    'text'=>'В работе',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>4,
+                   'statusReport'=>1
                ] ,
 
 
                'export_error'=>[
                    'text'=>'Отклонена. Ошибка',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>10,
+                   'statusReport'=>2
                ] ,
 
                'export_error_inn_duplicate'=>[
                    'text'=>'Отклонена. Дубль',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>9,
+                   'statusReport'=>2
                ] ,
 
                'created'=>[
                    'text'=>'Счет открыт',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>6,
+                   'statusReport'=>2
                ] ,
 
                'closed'=>[
                    'text'=>'Счет закрыт',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>7,
+                   'statusReport'=>2
                ] ,
 
 
                'activated'=>[
                    'text'=>'Счет активирован',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>9,
+                   'statusReport'=>2
                ] ,
 
                'process_client_meeting_at_bank'=>[
                    'text'=>'Встреча с клиентом',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>11,
+                   'statusReport'=>1
                ] ,
 
                'process_client_meeting_outside_bank'=>[
                    'text'=>'Встреча с клиентом',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>12,
+                   'statusReport'=>1
                ] ,
 
                'process_metting_waiting'=>[
                    'text'=>'Ожидание встречи с клиентом',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>13,
+                   'statusReport'=>1
                ] ,
 
 
                'process_not_call'=>[
                    'text'=>'Недозвон',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>14,
+                   'statusReport'=>1
                ] ,
 
                'process_recall'=>[
                    'text'=>'Клиент просил перезвонить',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>15,
+                   'statusReport'=>1
                ] ,
 
                'process_active_stops'=>[
                    'text'=>'Наличие действующих приостановок',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>16,
+                   'statusReport'=>2
                ] ,
 
                'process_opening'=>[
                    'text'=>'Открытие счета',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>6,
+                   'statusReport'=>1
                ] ,
 
                'process_client_info_waiting'=>[
                    'text'=>'Ожидание инф. от клиента',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>1
+                   'status'=>17,
+                   'statusReport'=>1
                ] ,
 
                'created_error_invalid_region'=>[
                    'text'=>'Отказ. В регионе нет отделения банка',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>18,
+                   'statusReport'=>2
                ] ,
 
                'created_error_bank_canceled'=>[
                    'text'=>'Отказ банка',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>19,
+                   'statusReport'=>2
                ] ,
 
 
                'created_error_client_canceled'=>[
                    'text'=>'Отказ клиента',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>20,
+                   'statusReport'=>2
                ] ,
 
                'created_error_client_canceled_not_request'=>[
                    'text'=>'Отказ клиента. Не оставлял заявку',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>21,
+                   'statusReport'=>2
                ] ,
 
                'created_error_not_call'=>[
                    'text'=>'Закрыта. Недозвон',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>22,
+                   'statusReport'=>2
                ] ,
 
                'created_error_invalid_phone'=>[
                    'text'=>'Закрыта. Номер не существует',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>23,
+                   'statusReport'=>2
                ] ,
 
                'created_error_duplicate'=>[
                    'text'=>'Закрыта. Дубль',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>24,
+                   'statusReport'=>2
                ] ,
 
                'created_error_expired'=>[
                    'text'=>'Предконтакт с истекшим сроком',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
-                   'status'=>2
+                   'status'=>25,
+                   'statusReport'=>2
                ] ,
 
 

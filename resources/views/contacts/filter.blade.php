@@ -7,56 +7,39 @@
 
             <div class="form-group mx-sm-3 mb-2">
                 <label  class="pr-2 font-weight-bold" >Начало</label>
-                <input type="date" name="start" class="form-control">
+                <input type="date" name="start" value="{{request()->get('start')}}" class="form-control">
             </div>
             <div class="form-group mx-sm-3 mb-2">
                 <label  class="pr-2 font-weight-bold" >Конец</label>
-                <input type="date" name="end" class="form-control">
+                <input type="date" name="end" value="{{request()->get('end')}}" class="form-control">
             </div>
+
             <div class="form-group mx-sm-3 mb-2">
-                <label class="pr-2 font-weight-bold" >ДУБЛИ ПРОВЕРКА</label>
-                <select name="double" class="form-control">
-                   <option value="all">ВСЕ</option>
-                   <option value="-1">НЕТ</option>
-                   <option value="1">ДА</option>
+                <label class="pr-2 font-weight-bold" >ПРАВОВАЯ ФОРМА</label>
+                <select name="type" class="form-control">
+                   <option value="all">ЛЮБАЯ</option>
+                   <option @if(request()->get('type')=='ip') selected  @endif value="ip">ИП </option>
+                   <option @if(request()->get('type')=='ooo') selected  @endif value="ooo">ООО</option>
                 </select>
             </div>
-            <div class="form-group mx-sm-3 mb-2">
-                <label  class="pr-2 font-weight-bold" >АЛЬФА</label>
-                <select name="alfa" class="form-control">
-                   <option value="-1">НЕТ В СИСТЕМЕ</option>
-                   <option value="1">ЕСТЬ В СИСТЕМЕ</option>
-                   <option value="2">АНКЕТА ОТПРАВЛЕНА</option>
-                   <option value="3">СЧЁТ ОТКРЫТ</option>
-                </select>
-            </div>
-            <div class="form-group mx-sm-3 mb-2">
-                <label class="pr-2 font-weight-bold" >ОТКРЫТИЕ</label>
-                <select name="alfa" class="form-control">
-                   <option value="-1">НЕТ В СИСТЕМЕ</option>
-                   <option value="1">ЕСТЬ В СИСТЕМЕ</option>
-                   <option value="2">АНКЕТА ОТПРАВЛЕНА</option>
-                   <option value="3">СЧЁТ ОТКРЫТ</option>
-                </select>
-            </div>
-            <div class="form-group mx-sm-3 mb-2">
-                <label class="pr-2 font-weight-bold" >ТИНЬКОФФ </label>
-                <select name="alfa" class="form-control">
-                   <option value="-1">НЕТ В СИСТЕМЕ</option>
-                   <option value="1">ЕСТЬ В СИСТЕМЕ</option>
-                   <option value="2">АНКЕТА ОТПРАВЛЕНА</option>
-                   <option value="3">СЧЁТ ОТКРЫТ</option>
-                </select>
-            </div>
-            <div class="form-group mx-sm-3 mb-2">
-                <label class="pr-2 font-weight-bold" >ВТБ </label>
-                <select name="alfa" class="form-control">
-                   <option value="-1">НЕТ В СИСТЕМЕ</option>
-                   <option value="1">ЕСТЬ В СИСТЕМЕ</option>
-                   <option value="2">АНКЕТА ОТПРАВЛЕНА</option>
-                   <option value="3">СЧЁТ ОТКРЫТ</option>
-                </select>
-            </div>
+
+            @if($banks)
+                @foreach($banks as $bank)
+                    @if(isset($bank_config_all[$bank->id]))
+                        <div class="form-group mx-sm-3 mb-2">
+                            <label  class="pr-2 font-weight-bold" >{{$bank->name}}</label>
+                            <select name="bank_{{$bank->id}}" class="form-control">
+                                <option selected disabled>Выбрать</option>
+                                @foreach($bank_config_all[$bank->id]['statusText'] as $key=>$value)
+                                    <option
+                                        @if(request()->get('bank_'.$bank->id)==$key) selected  @endif
+                                        value="{{$key}}">{{$value['text']}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    @endif
+                @endforeach
+            @endif
             <button type="submit" class="btn btn-primary mb-2">Применить</button>
         </form>
     </div>

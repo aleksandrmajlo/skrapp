@@ -9,6 +9,7 @@ use App\Models\Tariff;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7;
+use Illuminate\Support\Facades\DB;
 
 class BankOtkrytie extends Command
 {
@@ -50,7 +51,8 @@ class BankOtkrytie extends Command
             // тут добавляем города
             $response = json_decode($response);
             if ($response) {
-                City::where('bank_id', $bank_id)->delete();
+                DB::table('cities')->truncate();
+//                City::where('bank_id', $bank_id)->delete();
                 foreach ($response as $item) {
                     $city = new City();
                     $city->title = $item->city;
@@ -74,7 +76,8 @@ class BankOtkrytie extends Command
             // тут добавляем тариф
             $response = json_decode($response);
             if ($response) {
-                Tariff::where('bank_id', $bank_id)->delete();
+//                Tariff::where('bank_id', $bank_id)->delete();
+                DB::table('tariffs')->truncate();
                 foreach ($response->tariffs as $item) {
                     $tariff = new Tariff();
                     $tariff->title = $item->name;

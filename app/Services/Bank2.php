@@ -35,12 +35,6 @@ class Bank2
             'base_uri' => $bank_config['host'],
         ]);
 
-//        if (env('APP_ENV') === 'testing') {
-//            $url = $bank_config['test_add'];
-//        } else {
-//            $url = $bank_config['add'];
-//        }
-
         $resust = [
             'idd' => null,
             'input' => null
@@ -87,7 +81,9 @@ class Bank2
             // логирование
             $log = Log::create([
                 'request' => [
-                    'contact_id' => $contact_id,
+                    'full_name' => $contact->fullname,
+                    'inn' => $contact->inn,
+                    'phone' => $contact->phone,
                     'tariff_id' => $tariff_id,
                     'city' => $city->title,
                     'bank_id' => self::$bank_id
@@ -126,7 +122,6 @@ class Bank2
         $id = $report->idd;
         $bank_config = config('bank.' . $report->bank_id);
 
-
         $headers = [
             'x-auth-token: ' . $bank_config['token']
         ];
@@ -155,7 +150,7 @@ class Bank2
             // логирование end
             $status = 2;
             if (isset($bank_config['statusText'][$response->status])) {
-                $status = $bank_config['statusText'][$response->status]["status"];
+                $status = $bank_config['statusText'][$response->status]["statusReport"];
             }
             $report->status = $status;
             $report->save();
@@ -172,12 +167,14 @@ class Bank2
                     ->update([
                         'status' => $response->status,
                         'message' => $response->label,
+                        'user_id'=>$report->user_id,
                         'updated_at' => Carbon::now()
                     ]);
             } else {
                 DB::table('bank_contact')->insert([
                     'contact_id' => $report->contact_id,
                     'bank_id' => self::$bank_id,
+                    'user_id'=>$report->user_id,
                     'status' => $response->status,
                     'message' => $response->label,
                     'created_at' => Carbon::now(),
@@ -269,9 +266,11 @@ class Bank2
             ])->getBody()->getContents();
             $response = json_decode($response);
             if ($response->status == "done") {
+
                 $duplikate->status = 1;
                 $duplikate->response = $response;
                 $duplikate->save();
+
                 $inns = $response->result->inns;
                 // логирование
                 $log = Log::create([

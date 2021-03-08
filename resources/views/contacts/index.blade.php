@@ -17,7 +17,7 @@
                             <th scope="col">INN</th>
                             <th scope="col">PHONE</th>
                             <th scope="col" class="text-uppercase">organization</th>
-                            <th scope="col">DBL</th>
+{{--                            <th scope="col">DBL</th>--}}
                             @if($banks)
                                 @foreach($banks as $bank)
                                     <th scope="col">{{$bank->shortname}}</th>
@@ -34,10 +34,14 @@
                                 <td>{{$contact->inn}}</td>
                                 <td>{{$contact->phone}}</td>
                                 <td>{{$contact->organization}}</td>
-                                <td></td>
+{{--                                <td></td>--}}
                                 @if($banks)
                                     @foreach($banks as $bank)
-                                        <td></td>
+                                        <td>
+                                            @if(isset($data_banks[$contact->id])&&isset($data_banks[$contact->id][$bank->id]))
+                                                @include('contacts.onebankloop')
+                                            @endif
+                                        </td>
                                     @endforeach
                                 @endif
                                 <td>
@@ -52,11 +56,14 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div class="d-flex justify-content-center">
-                    {{ $contacts->links() }}
+        @if(count($contacts)>0)
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="d-flex justify-content-center">
+                        {{ $contacts->appends($_GET)->links() }}
+                    </div>
                 </div>
             </div>
-        </div>
+        @endif
+    </div>
 @endsection
