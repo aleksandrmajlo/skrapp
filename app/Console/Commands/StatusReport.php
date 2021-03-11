@@ -39,14 +39,10 @@ class StatusReport extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle()
     {
-        $reports = Report::send()->get();
+        $status = config('reports');
+        $reports = Report::get();
         foreach ($reports as $report) {
             $bank_id = $report->bank_id;
             switch ($bank_id) {
@@ -55,7 +51,9 @@ class StatusReport extends Command
                 case 1:
                     break;
                 case 2:
-                    Bank2::check($report);
+                    if ($report->status == $status[$bank_id]) {
+                        Bank2::check($report);
+                    }
                     break;
             }
         }

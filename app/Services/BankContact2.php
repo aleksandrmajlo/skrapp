@@ -56,7 +56,7 @@ class BankContact2
         }
         if (empty($bank_data)) {
             $bank_data = [
-                'value' => 0
+                'value' => -1
             ];
         }
         return $bank_data;

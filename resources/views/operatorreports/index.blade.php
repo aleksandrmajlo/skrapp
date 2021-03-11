@@ -3,7 +3,8 @@
 @section('content')
     <div class="container">
         <h1 class="text-center mb-3">Отчеты</h1>
-        @include('operatorreports.filter')
+{{--        @include('operatorreports.filter')--}}
+        @include('reports.filter')
         @if(count($reports)>0)
             <div class="row">
                 <div class="col-md-12">
@@ -17,7 +18,11 @@
                             <span class="spacer pr-1 pl-1">/</span>
                             <span>{{$report->contact->organization}}</span>
                             <span class="spacer pr-1 pl-1">/</span>
-                            <span>{{$report->type}}</span>
+                            <span>
+                                @if($bank_config_all[$report->bank_id]['statusText'][$report->status])
+                                    {{$bank_config_all[$report->bank_id]['statusText'][$report->status]['text']}}
+                                @endif
+                            </span>
                             <span class="spacer pr-1 pl-1">/</span>
                             <span>{{$report->bank->name}}</span>
                         </div>

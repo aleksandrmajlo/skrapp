@@ -108,7 +108,7 @@ class ContactAjax extends Controller
         if ($resust['input']) {
             $report->status = 0;
         } else {
-            $report->status = 1;
+            $report->status = $resust['status'];
         }
         $report->save();
         return response()->json([

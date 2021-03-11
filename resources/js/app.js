@@ -25,6 +25,8 @@ Vue.component('setting-admin', require('./components/settings/SettingAdmin.vue')
 Vue.component('contact-log', require('./components/contacts/ContactLog.vue').default);
 // опросить банки
 Vue.component('contact-bank', require('./components/contacts/ContactBank.vue').default);
+// получить результат
+// Vue.component('contact-resultget', require('./components/contacts/ContactResultget.vue').default);
 
 const app = new Vue({
     el: '#app',

@@ -20,23 +20,33 @@ class ReportController extends Controller
         $user=Auth::user();
         $banks=Bank::orderBy('sort')->get();
         $reports=$user->reports()->paginate($this->paginate);
-        $status = config('reports');
+        $bank_config_all = config('bank');
         return view('operatorreports.index',[
             'reports' => $reports,
             'banks' => $banks,
-            'status' => $status
+            'bank_config_all' => $bank_config_all,
         ]);
     }
 
     public function filter(Request $request)
     {
+        $banks = Bank::orderBy('sort')->get();
+
         $query = Report::orderBy('created_at', 'desc');
         $query->where('user_id', Auth::user()->id);
 
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
 
+        if ($request->has('type') && $request->type !== 'all') {
+            $contact_type = $request->type;
+            $query->whereHas('contact', function ($q) use ($contact_type) {
+                if ($contact_type == 'ip') {
+                    return $q->WhereRaw('length(inn)=12');
+                }
+                if ($contact_type == 'ooo') {
+                    return $q->WhereRaw('length(inn)=10');
+                }
+            });
+        }
         if ($request->has('bank_id')) {
             $query->where('bank_id', $request->bank_id);
         }
@@ -49,9 +59,17 @@ class ReportController extends Controller
         if (($request->has('date_end') && !empty($request->date_end)) && empty($request->date_start)) {
             $query->where('created_at', '<', $request->date_end . ' 23:59:59');
         }
+        foreach ($banks as $bank) {
+            if ($request->has('bank_' . $bank->id)&&$request->input('bank_' . $bank->id)!=='not') {
+                $query->where('status', $request->input('bank_' . $bank->id));
+                $query->where('bank_id', $bank->id);
+            }
+        }
         $reports = $query->paginate($this->paginate);
+        $status = config('reports');
+        $bank_config_all = config('bank');
 
-        $banks = Bank::orderBy('sort')->get();
+
         $status = config('reports');
         return view('operatorreports.index', [
             'reports' => $reports,

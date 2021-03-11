@@ -16,7 +16,7 @@ class AddPaidToRequestTable extends Migration
 
         Schema::table('reports', function (Blueprint $table) {
             $table->string('idd')->nullable();
-            $table->integer('status')->default(0);
+            $table->string('status')->default(0);
         });
 
     }

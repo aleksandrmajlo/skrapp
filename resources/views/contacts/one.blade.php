@@ -204,5 +204,6 @@
     </table>
 </div>
 <contact-bank contact_id="{{$contact->id}}"></contact-bank>
-
+<a href="/statusreport" class="btn btn-primary">Получить результат </a>
+{{--<contact-resultget></contact-resultget>--}}
 

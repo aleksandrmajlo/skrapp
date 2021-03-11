@@ -39,7 +39,6 @@ class Bank2
             'idd' => null,
             'input' => null
         ];
-
         if (env('APP_ENV') === 'testing') {
             $url = $bank_config['test_add'];
         } else {
@@ -78,6 +77,8 @@ class Bank2
             ])->getBody()->getContents();
             $response = json_decode($response);
             $resust['idd'] = $response->id;
+            $resust['status']='inqueue';
+
             // логирование
             $log = Log::create([
                 'request' => [
@@ -91,6 +92,7 @@ class Bank2
                 'answer' => ['idd' => $response->id],
                 'type' => 'POST ' . $bank_config['host'] . $url,
             ]);
+
 
         } catch (RequestException $e) {
 
@@ -148,11 +150,8 @@ class Bank2
                 'type' => 'GET ' . $bank_config['host'] . $url,
             ]);
             // логирование end
-            $status = 2;
-            if (isset($bank_config['statusText'][$response->status])) {
-                $status = $bank_config['statusText'][$response->status]["statusReport"];
-            }
-            $report->status = $status;
+
+            $report->status = $response->status;
             $report->save();
 
             $r = DB::table('bank_contact')

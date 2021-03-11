@@ -26,25 +26,29 @@ return [
 
               'not'=>[
                   'text'=>'Проверка отсутствует',
-                  'type'=>''
+                  'type'=>'',
+                  'inReport'=>false
               ],
 
                'success'=>[
-                   'text'=>'НЕТ В СИСТЕМЕ (проверка выполнена, анкеты нет в банке)',
+                   'text'=>'ПРОВЕРКА В БАНКЕ ВЫПОЛНЕНА',
                    'type'=>'Проверка на дубль',
-                   'status'=>0
+                   'status'=>0,
+                   'inReport'=>false
                ] ,
 
                'fail'=>[
                    'text'=>'Заявка есть. Проверка не пройдена(Отклонена. Дубль)',
                    'type'=>'Проверка на дубль',
-                   'status'=>1
+                   'status'=>1,
+                   'inReport'=>false
                ] ,
 
                'error'=>[
                    'text'=>'Ошибка при проверке',
                    'type'=>'Проверка на дубль',
-                   'status'=>1
+                   'status'=>1,
+                   'inReport'=>false
                ] ,
 
 
@@ -52,6 +56,7 @@ return [
                    'text'=>'Отправляем в банк',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>3,
+                   'inReport'=>true,
                    'statusReport'=>1
                ] ,
 
@@ -60,14 +65,15 @@ return [
                    'text'=>'Обрабатывается',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>3,
+                   'inReport'=>true,
                    'statusReport'=>1
                ] ,
-
 
                'exported'=>[
                    'text'=>'В работе',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>4,
+                   'inReport'=>true,
                    'statusReport'=>1
                ] ,
 
@@ -76,6 +82,7 @@ return [
                    'text'=>'Отклонена. Ошибка',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>10,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -83,6 +90,7 @@ return [
                    'text'=>'Отклонена. Дубль',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>9,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -90,6 +98,7 @@ return [
                    'text'=>'Счет открыт',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>6,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -97,6 +106,7 @@ return [
                    'text'=>'Счет закрыт',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>7,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -105,13 +115,15 @@ return [
                    'text'=>'Счет активирован',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>9,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
                'process_client_meeting_at_bank'=>[
-                   'text'=>'Встреча с клиентом',
+                   'text'=>'Встреча с клиентом в банке',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>11,
+                   'inReport'=>true,
                    'statusReport'=>1
                ] ,
 
@@ -119,6 +131,7 @@ return [
                    'text'=>'Встреча с клиентом',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>12,
+                   'inReport'=>true,
                    'statusReport'=>1
                ] ,
 
@@ -126,6 +139,7 @@ return [
                    'text'=>'Ожидание встречи с клиентом',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>13,
+                   'inReport'=>true,
                    'statusReport'=>1
                ] ,
 
@@ -134,6 +148,7 @@ return [
                    'text'=>'Недозвон',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>14,
+                   'inReport'=>true,
                    'statusReport'=>1
                ] ,
 
@@ -141,6 +156,7 @@ return [
                    'text'=>'Клиент просил перезвонить',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>15,
+                   'inReport'=>true,
                    'statusReport'=>1
                ] ,
 
@@ -148,6 +164,7 @@ return [
                    'text'=>'Наличие действующих приостановок',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>16,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -155,6 +172,7 @@ return [
                    'text'=>'Открытие счета',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>6,
+                   'inReport'=>true,
                    'statusReport'=>1
                ] ,
 
@@ -162,6 +180,7 @@ return [
                    'text'=>'Ожидание инф. от клиента',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>17,
+                   'inReport'=>true,
                    'statusReport'=>1
                ] ,
 
@@ -169,6 +188,7 @@ return [
                    'text'=>'Отказ. В регионе нет отделения банка',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>18,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -176,6 +196,7 @@ return [
                    'text'=>'Отказ банка',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>19,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -184,6 +205,7 @@ return [
                    'text'=>'Отказ клиента',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>20,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -191,6 +213,7 @@ return [
                    'text'=>'Отказ клиента. Не оставлял заявку',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>21,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -198,6 +221,7 @@ return [
                    'text'=>'Закрыта. Недозвон',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>22,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -205,6 +229,7 @@ return [
                    'text'=>'Закрыта. Номер не существует',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>23,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -212,6 +237,7 @@ return [
                    'text'=>'Закрыта. Дубль',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>24,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 
@@ -219,6 +245,7 @@ return [
                    'text'=>'Предконтакт с истекшим сроком',
                    'type'=>'ПОЛУЧЕНИЕ СТАТУСА ЗАЯВКИ',
                    'status'=>25,
+                   'inReport'=>true,
                    'statusReport'=>2
                ] ,
 

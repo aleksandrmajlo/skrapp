@@ -17,20 +17,30 @@ class ReportController extends Controller
         $reports = Report::orderBy('created_at', 'desc')->paginate($this->paginate);
         $banks = Bank::orderBy('sort')->get();
         $operators = User::activeoperator()->orderBy('created_at')->get();
-        $status = config('reports');
+        $bank_config_all = config('bank');
         return view('reports.index', [
             'reports' => $reports,
             'banks' => $banks,
             'operators' => $operators,
-            'status' => $status
+            'bank_config_all' => $bank_config_all,
         ]);
     }
 
     public function filter(Request $request)
     {
+        $banks = Bank::orderBy('sort')->get();
         $query = Report::orderBy('created_at', 'desc');
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
+
+        if ($request->has('type') && $request->type !== 'all') {
+            $contact_type = $request->type;
+            $query->whereHas('contact', function ($q) use ($contact_type) {
+                if ($contact_type == 'ip') {
+                    return $q->WhereRaw('length(inn)=12');
+                }
+                if ($contact_type == 'ooo') {
+                    return $q->WhereRaw('length(inn)=10');
+                }
+            });
         }
         if ($request->has('user_id')) {
             $query->where('user_id', $request->user_id);
@@ -47,77 +57,26 @@ class ReportController extends Controller
         if (($request->has('date_end') && !empty($request->date_end)) && empty($request->date_start)) {
             $query->where('created_at', '<', $request->date_end . ' 23:59:59');
         }
+        foreach ($banks as $bank) {
+            if ($request->has('bank_' . $bank->id)&&$request->input('bank_' . $bank->id)!=='not') {
+                $query->where('status', $request->input('bank_' . $bank->id));
+                $query->where('bank_id', $bank->id);
+            }
+        }
         $reports = $query->paginate($this->paginate);
-        $banks = Bank::orderBy('sort')->get();
         $operators = User::activeoperator()->orderBy('created_at')->get();
         $status = config('reports');
+        $bank_config_all = config('bank');
+
+
         return view('reports.index', [
             'reports' => $reports,
             'banks' => $banks,
             'operators' => $operators,
-            'status' => $status
+            'status' => $status,
+            'bank_config_all' => $bank_config_all,
         ]);
 
     }
 
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
