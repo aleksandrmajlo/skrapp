@@ -4,6 +4,7 @@
 namespace App\Services;
 
 use App\Models\Contact;
+use App\Models\ContactLog;
 use App\Models\Dublicate;
 
 use App\Models\Log;
@@ -14,6 +15,7 @@ use GuzzleHttp\Psr7;
 use GuzzleHttp\RequestOptions;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 
@@ -92,6 +94,14 @@ class Bank2
                 'answer' => ['idd' => $response->id],
                 'type' => 'POST ' . $bank_config['host'] . $url,
             ]);
+
+            // логирование для контактов
+            $contactlog = new ContactLog;
+            $contactlog->type='5';
+            $contactlog->user_id=Auth::user()->id;
+            $contactlog->contact_id=$contact->id;
+            $contactlog->bank_id=self::$bank_id;
+            $contactlog->save();
 
 
         } catch (RequestException $e) {
@@ -181,6 +191,20 @@ class Bank2
                 ]);
             }
 
+            //
+            $user_id=null;
+            if(Auth::user()){
+                $user_id=Auth::user()->id;
+            }
+            // логирование для контактов
+            $contactlog = new ContactLog;
+            $contactlog->type='6';
+            $contactlog->user_id=$user_id;
+            $contactlog->contact_id=$report->contact_id;
+            $contactlog->bank_id=self::$bank_id;
+            $contactlog->status = $response->status;
+            $contactlog->save();
+
         } catch (RequestException $e) {
             $error = Psr7\Message::toString($e->getRequest());
             if ($e->hasResponse()) {
@@ -221,16 +245,19 @@ class Bank2
                 RequestOptions::JSON => ['inns' => $inns],
             ])->getBody()->getContents();
             $response = json_decode($response);
+            // лог общий
             $log = Log::create([
                 'request' => ['inns' => $inns],
                 'answer' => $response,
                 'type' => 'POST ' . $bank_config['host'] . $url,
             ]);
+
             $duplicate = Dublicate::create([
                 'idd' => $response->id,
                 'inns' => $inns,
                 'bank_id' => self::$bank_id
             ]);
+
         } catch (RequestException $e) {
             $error = Psr7\Message::toString($e->getRequest());
             if ($e->hasResponse()) {
@@ -284,10 +311,12 @@ class Bank2
                             $message = null;
                             if (isset($inn->message)) $message = $inn->message;
                             foreach ($contacts as $contact) {
+
                                 $r = DB::table('bank_contact')
                                     ->where('contact_id', $contact->id)
                                     ->where('bank_id', self::$bank_id)
                                     ->first();
+
                                 if ($r) {
                                     DB::table('bank_contact')
                                         ->where('contact_id', $contact->id)
@@ -308,6 +337,16 @@ class Bank2
 
                                     ]);
                                 }
+
+                                $contactlog = new ContactLog;
+                                $contactlog->type='4';
+                                $contactlog->status=$inn->inn_status;
+                                $contactlog->user_id=Auth::user()->id;
+                                $contactlog->contact_id=$contact->id;
+                                $contactlog->bank_id=self::$bank_id;
+                                $contactlog->save();
+
+
                             }
                         }
 

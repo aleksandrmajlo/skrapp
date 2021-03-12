@@ -1,29 +1,36 @@
 <template>
-    <div>
-        <div class="row" v-for="(contactlog,index) in contactlogs" :key="index">
-            <div class="col-md-3">
+    <table class="table  table-bordered">
+        <tr v-for="(contactlog,index) in contactlogs" :key="index">
+            <td >
                 <p class="text-bold">
                     {{contactlog.date}} {{contactlog.user}}
                 </p>
-
-            </div>
-            <div class="col-md-1">
+            </td>
+            <td >
                 {{contactlog.type}}
-            </div>
-            <div class="col-md-4">
+            </td>
+            <td>
+                {{contactlog.bank}}
+            </td>
+
+            <td>
+                {{contactlog.status}}
+            </td>
+
+            <td>
                 <h5>Старые данные</h5>
                 <pre>
                 {{contactlog.input}}
-            </pre>
-            </div>
-            <div class="col-md-4">
+                 </pre>
+            </td>
+            <td>
                 <h5>Обновленные</h5>
                 <pre>
-                {{contactlog.input_new}}
-            </pre>
-            </div>
-        </div>
-    </div>
+                   {{contactlog.input_new}}
+                 </pre>
+            </td>
+        </tr>
+    </table>
 </template>
 
 <script>

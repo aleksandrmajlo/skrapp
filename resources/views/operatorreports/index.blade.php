@@ -3,7 +3,6 @@
 @section('content')
     <div class="container">
         <h1 class="text-center mb-3">Отчеты</h1>
-{{--        @include('operatorreports.filter')--}}
         @include('reports.filter')
         @if(count($reports)>0)
             <div class="row">

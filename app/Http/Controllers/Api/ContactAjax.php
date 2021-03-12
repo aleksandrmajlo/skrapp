@@ -67,12 +67,28 @@ class ContactAjax extends Controller
         $config = config('contactlog');
         $res_contactlogs = [];
         foreach ($contactlogs as $contactlog) {
+            $bank = '';
+            $status = $contactlog->status;
+            if ($contactlog->bank_id) {
+                $bank = $contactlog->bank->name;
+                $config_bank = config('bank');
+                if (isset($config_bank[$contactlog->bank_id]['statusText'][$contactlog->status])) {
+                    $status = $config_bank[$contactlog->bank_id]['statusText'][$contactlog->status]['text'];
+                }
+            }
+            $user='cron';
+            if($contactlog->user_id){
+                $user=$contactlog->user->email;
+            }
             $res_contactlogs[] = [
                 'input' => json_decode($contactlog->input),
                 'input_new' => json_decode($contactlog->input_new),
                 'type' => $config[$contactlog->type],
-                'user' => $contactlog->user->email,
-                'date' => $contactlog->created_at->format('d-m-Y h:i:s')
+                'user' => $user,
+                'date' => $contactlog->created_at->format('d-m-Y h:i:s'),
+                'status' => $status,
+                'bank' => $bank,
+
             ];
         }
         return response()->json([
@@ -111,6 +127,8 @@ class ContactAjax extends Controller
             $report->status = $resust['status'];
         }
         $report->save();
+
+
         return response()->json([
             'suc' => true
         ]);
@@ -130,6 +148,14 @@ class ContactAjax extends Controller
                     break;
             }
         }
-        response()->json(['suc'=>true]);
+        // лог контакта
+        $contactlog = new ContactLog;
+        $contactlog->type = '3';
+        $contactlog->user_id = Auth::user()->id;
+        $contactlog->contact_id = $contact_id;
+        $contactlog->save();
+
+        response()->json(['suc' => true]);
     }
+
 }
