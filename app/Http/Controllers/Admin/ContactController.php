@@ -15,10 +15,12 @@ class ContactController extends Controller
     {
         $paginate = config('custom.paginate');
         $banks = Bank::orderBy('sort')->get();
+        $count=0;
         if ($request->has('q')) {
             $q = $request->q;
             $contacts = Contact::where('phone', 'LIKE', '%' . $q . '%')->orWhere('idbank', 'LIKE', '%' . $q . '%')->orWhere('inn', 'LIKE', '%' . $q . '%')->paginate($paginate);
         } elseif (count($request->all()) > 0) {
+
             $queryContact = Contact::query();
             if ($request->has('type') && $request->type !== 'all') {
                 if ($request->type == 'ip') {
@@ -53,6 +55,7 @@ class ContactController extends Controller
                 $queryContact->where('created_at', '<=', $request->end.' 23:59:59');
             }
             $contacts = $queryContact->paginate($paginate);
+            $count= $queryContact->count();
         } else {
             $contacts = Contact::paginate($paginate);
         }
@@ -80,6 +83,7 @@ class ContactController extends Controller
                 'banks' => $banks,
                 'data_banks' => $data_banks,
                 'bank_config_all' => $bank_config_all,
+                'count'=>$count
             ]
         );
     }
@@ -92,20 +96,13 @@ class ContactController extends Controller
 
     public function store(Request $request)
     {
-        //
     }
 
     public function show($id)
     {
-        //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
 

@@ -13,6 +13,7 @@ import VueLoaders from 'vue-loaders';
 Vue.use(VueLoaders);
 
 
+
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
@@ -25,8 +26,8 @@ Vue.component('setting-admin', require('./components/settings/SettingAdmin.vue')
 Vue.component('contact-log', require('./components/contacts/ContactLog.vue').default);
 // опросить банки
 Vue.component('contact-bank', require('./components/contacts/ContactBank.vue').default);
-// получить результат
-// Vue.component('contact-resultget', require('./components/contacts/ContactResultget.vue').default);
+// DatepickerWrap
+Vue.component('datepicker-wrap', require('./components/contacts/DatepickerWrap.vue').default);
 
 const app = new Vue({
     el: '#app',

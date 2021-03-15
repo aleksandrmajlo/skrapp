@@ -2,7 +2,7 @@ const {
     default: Axios
 } = require("axios");
 const {
-    default:Swal
+    default: Swal
 } = require("sweetalert2");
 
 const {
@@ -21,10 +21,8 @@ $(document).ready(function () {
     $('.resetLink').click(function (e) {
         e.preventDefault();
         $(this).siblings('.dataInp').val($(this).siblings('.dataInp').data('orig'))
-
         $(this).parent('.resetData').removeClass('d-flex');
         $(this).parents('td').find('.realData').removeClass('d-none');
-
     });
 
     $('#saveClient').click(function (e) {

@@ -23,7 +23,7 @@ class ContactController extends Controller
         if ($operator->upload == 1) {
             $paginate = config('custom.paginate');
             $banks = Bank::orderBy('sort')->get();
-
+            $count=0;
             if ($request->has('q')) {
                 $q = $request->q;
                 $contacts = Contact::where('phone', 'LIKE', '%' . $q . '%')->orWhere('idbank', 'LIKE', '%' . $q . '%')->orWhere('inn', 'LIKE', '%' . $q . '%')->paginate($paginate);
@@ -36,7 +36,6 @@ class ContactController extends Controller
                     if ($request->type == 'ooo') {
                         $queryContact->orWhereRaw('length(inn)=10');
                     }
-
                 }
                 foreach ($banks as $bank) {
                     if ($request->has('bank_' . $bank->id)&&$request->input('bank_' . $bank->id)!=='not') {
@@ -62,10 +61,10 @@ class ContactController extends Controller
                     $queryContact->where('created_at', '<=', $request->end.' 23:59:59');
                 }
                 $contacts = $queryContact->paginate($paginate);
+                $count= $queryContact->count();
             } else {
                 $contacts = Contact::paginate($paginate);
             }
-
             $data_banks = [];
             foreach ($contacts as $contact) {
                 if ($contact->banks) {
@@ -90,6 +89,7 @@ class ContactController extends Controller
                 'banks' => $banks,
                 'data_banks' => $data_banks,
                 'bank_config_all' => $bank_config_all,
+                'count'=>$count
             ]);
         }
         else {
@@ -191,6 +191,6 @@ class ContactController extends Controller
      */
     public function destroy($id)
     {
-        //
+
     }
 }

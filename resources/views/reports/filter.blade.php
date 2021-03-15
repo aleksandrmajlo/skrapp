@@ -3,14 +3,14 @@
         <h2 class="mb-3">СФОРМИРОВАТЬ ОТЧЁТ</h2>
     </div>
     <div class="col-md-12">
-        <form class="form-inline" action="/reports-filter" method="get">
+        <form class="form-inline" action="{{$filter_url}}" method="get">
             <div class="form-group mx-sm-3 mb-2">
                 <label class="pr-2 font-weight-bold">Начало</label>
-                <input type="date" value="{{\Request()->get('date_start')}}" name="date_start" class="form-control">
+                <datepicker-wrap value="{{request()->get('date_start')}}" name="date_start"></datepicker-wrap>
             </div>
             <div class="form-group mx-sm-3 mb-2">
                 <label class="pr-2 font-weight-bold">Конец</label>
-                <input type="date" name="date_end" value="{{\Request()->get('date_end')}}" class="form-control">
+                <datepicker-wrap value="{{request()->get('date_end')}}" name="date_end"></datepicker-wrap>
             </div>
             @if(isset($operators))
                 <div class="form-group mx-sm-3 mb-2">
@@ -61,9 +61,11 @@
             <button type="submit" class="btn btn-primary mb-2">Сформировать отчет</button>
         </form>
     </div>
-    <div class="col-md-12">
-        <h3 class="my-3">РЕЗУЛЬТАТ ОТЧЁТА:</h3>
-    </div>
+    @if(isset($count)&&$count>0)
+        <div class="col-md-12">
+            <h3 class="my-3">РЕЗУЛЬТАТ ОТЧЁТА: {{$count}}</h3>
+        </div>
+    @endif
     <div class="col-md-12">
         <hr class="new1">
     </div>

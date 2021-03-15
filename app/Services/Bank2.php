@@ -338,10 +338,15 @@ class Bank2
                                     ]);
                                 }
 
+                                //
+                                $user_id=null;
+                                if(Auth::user()){
+                                    $user_id=Auth::user()->id;
+                                }
                                 $contactlog = new ContactLog;
                                 $contactlog->type='4';
                                 $contactlog->status=$inn->inn_status;
-                                $contactlog->user_id=Auth::user()->id;
+                                $contactlog->user_id=$user_id;
                                 $contactlog->contact_id=$contact->id;
                                 $contactlog->bank_id=self::$bank_id;
                                 $contactlog->save();

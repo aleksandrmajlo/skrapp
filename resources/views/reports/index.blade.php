@@ -8,30 +8,14 @@
             <div class="row">
                 <div class="col-md-12 mb-3">
                     @foreach($reports as $report)
-                        <div class="reportLoopItem">
-                            <span>{{$report->created_at}}</span>
-                            <span class="spacer pr-1 pl-1">/</span>
-                            <span>{{$report->user->fio}}</span>
-                            <span class="spacer pr-1 pl-1">/</span>
-                            <span>{{$report->contact->inn}}</span>
-                            <span class="spacer pr-1 pl-1">/</span>
-                            <span>{{$report->contact->organization}}</span>
-                            <span class="spacer pr-1 pl-1">/</span>
-                            <span>
-                                @if($bank_config_all[$report->bank_id]['statusText'][$report->status])
-                                    {{$bank_config_all[$report->bank_id]['statusText'][$report->status]['text']}}
-                                @endif
-                            </span>
-                            <span class="spacer pr-1 pl-1">/</span>
-                            <span>{{$report->bank->name}}</span>
-                        </div>
+                        @include('reports.item')
                     @endforeach
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
                     <div class="d-flex justify-content-center">
-                        {{ $reports->links() }}
+                        {{ $reports->appends($_GET)->links() }}
                     </div>
                 </div>
             </div>

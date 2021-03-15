@@ -25,6 +25,8 @@ class ReportController extends Controller
             'reports' => $reports,
             'banks' => $banks,
             'bank_config_all' => $bank_config_all,
+            'count'=>0,
+            'filter_url'=>'/reports-filter-operator'
         ]);
     }
 
@@ -74,7 +76,8 @@ class ReportController extends Controller
         return view('operatorreports.index', [
             'reports' => $reports,
             'banks' => $banks,
-            'status' => $status
+            'status' => $status,
+            'filter_url'=>'/reports-filter-operator'
         ]);
 
     }

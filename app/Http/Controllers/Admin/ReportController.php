@@ -18,11 +18,14 @@ class ReportController extends Controller
         $banks = Bank::orderBy('sort')->get();
         $operators = User::activeoperator()->orderBy('created_at')->get();
         $bank_config_all = config('bank');
+
         return view('reports.index', [
             'reports' => $reports,
             'banks' => $banks,
             'operators' => $operators,
             'bank_config_all' => $bank_config_all,
+            'count'=>0,
+            'filter_url'=>'/reports-filter'
         ]);
     }
 
@@ -31,6 +34,7 @@ class ReportController extends Controller
         $banks = Bank::orderBy('sort')->get();
         $query = Report::orderBy('created_at', 'desc');
 
+        $count=0;
         if ($request->has('type') && $request->type !== 'all') {
             $contact_type = $request->type;
             $query->whereHas('contact', function ($q) use ($contact_type) {
@@ -64,10 +68,11 @@ class ReportController extends Controller
             }
         }
         $reports = $query->paginate($this->paginate);
+        $count=$query->count();
+
         $operators = User::activeoperator()->orderBy('created_at')->get();
         $status = config('reports');
         $bank_config_all = config('bank');
-
 
         return view('reports.index', [
             'reports' => $reports,
@@ -75,6 +80,8 @@ class ReportController extends Controller
             'operators' => $operators,
             'status' => $status,
             'bank_config_all' => $bank_config_all,
+            'count'=>$count,
+            'filter_url'=>'/reports-filter'
         ]);
 
     }

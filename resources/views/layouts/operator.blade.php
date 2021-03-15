@@ -33,7 +33,9 @@
                     </li>
                     @guest
                     @else
+
                         <li class="nav-item">
+
                             <a class="nav-link" href="{{ route('logout') }}"
                                onclick="event.preventDefault();
                                            document.getElementById('logout-form').submit();">
@@ -45,10 +47,14 @@
                         </li>
                     @endguest
                 </ul>
+
                 <form class="form-inline  my-2 my-lg-0" method="get" action="{{ route('search_operatorcontacts') }}">
                     <input name="q" class="form-control mr-sm-2" type="search" required placeholder="БЫСТРЫЙ ПОИСК ПО: ID / INN / PHONE" aria-label="Search">
                     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">ПОИСК</button>
                 </form>
+                <div class="pl-2">
+                    {{ Auth::user()->email }}
+                </div>
             </div>
         </div>
     </nav>
