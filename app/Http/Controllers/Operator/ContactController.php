@@ -20,14 +20,16 @@ class ContactController extends Controller
     public function index(Request $request)
     {
         $operator = Auth::user();
-        if ($operator->upload == 1) {
+//        if ($operator->upload == 1) {
+
             $paginate = config('custom.paginate');
             $banks = Bank::orderBy('sort')->get();
             $count=0;
             if ($request->has('q')) {
                 $q = $request->q;
                 $contacts = Contact::where('phone', 'LIKE', '%' . $q . '%')->orWhere('idbank', 'LIKE', '%' . $q . '%')->orWhere('inn', 'LIKE', '%' . $q . '%')->paginate($paginate);
-            } elseif (count($request->all()) > 0) {
+            }
+            elseif (count($request->all()) > 0) {
                 $queryContact = Contact::query();
                 if ($request->has('type') && $request->type !== 'all') {
                     if ($request->type == 'ip') {
@@ -62,9 +64,8 @@ class ContactController extends Controller
                 }
                 $contacts = $queryContact->paginate($paginate);
                 $count= $queryContact->count();
-            } else {
-                $contacts = Contact::paginate($paginate);
             }
+            else { $contacts = Contact::paginate($paginate); }
             $data_banks = [];
             foreach ($contacts as $contact) {
                 if ($contact->banks) {
@@ -91,13 +92,12 @@ class ContactController extends Controller
                 'bank_config_all' => $bank_config_all,
                 'count'=>$count
             ]);
-        }
-        else {
-            return redirect('/no-access');
-        }
+//        }
+//        else {
+//            return redirect('/no-access');
+//        }
 
     }
-
     public function search(Request $request)
     {
         if ($request->has('q')) {
@@ -113,44 +113,23 @@ class ContactController extends Controller
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function edit($id)
     {
         $contact = Contact::findOrFail($id);
@@ -183,12 +162,6 @@ class ContactController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
 

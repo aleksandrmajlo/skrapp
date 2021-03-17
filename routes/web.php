@@ -18,7 +18,9 @@ Route::get('/no-access', function () {
     return view('no-access');
 });
 Auth::routes(['register' => false]);
+
 Route::group(['middleware' => 'roleadmin'], function () {
+
     Route::get('/dashboardadmin', [App\Http\Controllers\HomeController::class, 'index'])->name('dashboardadmin');
     //операторы
     Route::resource('operators', App\Http\Controllers\Admin\OperatorController::class);
@@ -33,7 +35,6 @@ Route::group(['middleware' => 'roleadmin'], function () {
 });
 // оператор
 Route::group(['middleware' => 'roleoperator'], function () {
-
     Route::get('/dashboardoperator', [App\Http\Controllers\HomeController::class, 'operator'])->name('dashboardoperator');
     // отчеты
     Route::get('reports-filter-operator', 'App\Http\Controllers\Operator\ReportController@filter')->name('reports-filter-operator');
@@ -41,9 +42,13 @@ Route::group(['middleware' => 'roleoperator'], function () {
     // контакты
     Route::get('operatorcontacts/search', 'App\Http\Controllers\Operator\ContactController@search')->name('search_operatorcontacts');
     Route::resource('operatorcontacts', App\Http\Controllers\Operator\ContactController::class);
+
 });
 // загрузка exel контактов
 Route::post('file-upload', [App\Http\Controllers\Admin\FileUploadController::class, 'fileUploadExcel'])->name('file.upload.excel');
+// експорт контактов из фильтра
+Route::get('contact-export', [App\Http\Controllers\Export\ExportController::class, 'contacts'])->name('contact-export');
+
 Route::group(['prefix' => 'ajax'], function () {
 
     Route::post('/operators/authenticationlogs', 'App\Http\Controllers\Api\OperatorController@logs');

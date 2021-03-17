@@ -11,7 +11,7 @@ use Yadahan\AuthenticationLog\AuthenticationLogable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, AuthenticationLogable;
-    
+
     protected $fillable = [
         'name',
         'email',
@@ -20,7 +20,8 @@ class User extends Authenticatable
         'fio',
         'phone',
         'status',
-        'upload'
+        'upload',
+        'ContactDownload'
     ];
     protected $hidden = [
         'password',
@@ -31,26 +32,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-
-    public function contacts(){
+    public function contacts()
+    {
         return $this->hasMany('App\Models\Contact');
     }
-
 
     public function banks()
     {
         return $this->belongsToMany(Bank::class);
     }
 
-
     public function reports()
-        {
-            return $this->hasMany(Report::class);
-        }
+    {
+        return $this->hasMany(Report::class);
+    }
 
     public function scopeActiveoperator($query)
     {
-        return $query->where('status', '1')->where('role',2);
+        return $query->where('status', '1')->where('role', 2);
     }
 
 }

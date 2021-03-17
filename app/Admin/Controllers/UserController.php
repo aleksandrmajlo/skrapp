@@ -127,6 +127,7 @@ class UserController extends Controller
 
         $form->radio('status', 'Cтатус')->options(['0' => 'Заблокирован', '1' => 'Активен'])->default('1')->required();
         $form->radio('upload', 'Загрузка Excel')->options(['0' => 'Нет', '1' => 'Да'])->default('1')->required();
+        $form->radio('ContactDownload', 'ContactDownload')->options(['0' => 'Нет', '1' => 'Да'])->default('1')->required();
 
 
         if ($edit) {
@@ -164,6 +165,7 @@ class UserController extends Controller
             'role' => $data['role'],
             'status' => $data['status'],
             'upload' => $data['upload'],
+            'ContactDownload' => $data['ContactDownload'],
             'password' => Hash::make($data['password']),
         ]);
     }
@@ -191,6 +193,7 @@ class UserController extends Controller
         $user->role=$request->role;
         $user->status=$request->status;
         $user->upload=$request->upload;
+        $user->ContactDownload=$request->ContactDownload;
         $user->save();
 
         return redirect('/admin/users/' . $user->id . '/edit')->with('status', 'Profile updated!');

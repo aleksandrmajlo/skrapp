@@ -23,4 +23,8 @@ Route::group([
     // банки
     $router->resource('banks', BankController::class);
 
+    // настроййки
+    $router->resource('settings', SettingController::class);
+
+
 });

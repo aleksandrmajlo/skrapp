@@ -38,9 +38,9 @@ class OperatorController extends Controller
             'role' => 2,
             'status' => $request->status,
             'upload' => $request->upload,
+            'ContactDownload' => $request->ContactDownload,
             'password' => Hash::make($request->password),
         ]);
-
         return redirect('/operators')->with('status', 'Оператор создан!');
 
     }
@@ -75,6 +75,7 @@ class OperatorController extends Controller
         $operator->fio=$request->fio;
         $operator->status=$request->status;
         $operator->upload=$request->upload;
+        $operator->ContactDownload=$request->ContactDownload;
         $operator->save();
 
         return redirect('/operators/' . $operator->id . '/edit')->with('status', 'Оператор обновлен!');

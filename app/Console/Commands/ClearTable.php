@@ -40,6 +40,7 @@ class ClearTable extends Command
     public function handle()
     {
         DB::table('contacts')->truncate();
+
 //        DB::table('cities')->truncate();
 //        DB::table('tariffs')->truncate();
         DB::table('contact_logs')->truncate();
@@ -47,5 +48,9 @@ class ClearTable extends Command
         DB::table('reports')->truncate();
         DB::table('dublicates')->truncate();
         DB::table('bank_contact')->truncate();
+
+        // лог авторизаций
+         DB::table('authentication_log')->truncate();
+
     }
 }

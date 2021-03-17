@@ -78,6 +78,7 @@ class ContactController extends Controller
             }
         }
         $bank_config_all = config('bank');
+
         return view('contacts.index', [
                 'contacts' => $contacts,
                 'banks' => $banks,
@@ -127,13 +128,7 @@ class ContactController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
         //

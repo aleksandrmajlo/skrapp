@@ -19,8 +19,9 @@ class FileUploadController extends Controller
         if(in_array($result[0],$extensions)){
             $conact = new ContactsImport;
             $rows = Excel::import($conact, request()->file('file'));
+            $duplicate=$conact->getAllrowCount()-$conact->getRowCount();
             return back()
-                ->with('success', 'Контактов добавлено - ' . $conact->getRowCount().'. Дублей -'.$conact->getAllrowCount());
+                ->with('success', 'Контактов добавлено - ' . $conact->getRowCount().'. Дублей -'.$duplicate);
         }else{
              return back()->with('error','Поле file должно быть файлом одного из следующих типов:xlsx,xls ');
         }

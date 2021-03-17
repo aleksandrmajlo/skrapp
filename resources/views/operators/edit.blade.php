@@ -49,6 +49,7 @@
                             </select>
                         </div>
                     </div>
+
                     <fieldset class="form-group">
                         <div class="row">
                             <legend class="col-form-label col-sm-2 pt-0">ContactUpload</legend>
@@ -68,6 +69,28 @@
                             </div>
                         </div>
                     </fieldset>
+
+                    <fieldset class="form-group">
+                        <div class="row">
+                            <legend class="col-form-label col-sm-2 pt-0">ContactDownload</legend>
+                            <div class="col-sm-10">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ContactDownload" id="ContactDownload1" value="1" required @if($operator->ContactDownload==1) checked @endif >
+                                    <label class="form-check-label" for="ContactDownload1">
+                                        Да
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="ContactDownload" required id="ContactDownload2" value="0" @if($operator->ContactDownload=="0") checked @endif>
+                                    <label class="form-check-label" for="ContactDownload2">
+                                        Нет
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+
+
                     <button type="submit" class="btn btn-primary">Сохранить</button>
                 </form>
             </div>

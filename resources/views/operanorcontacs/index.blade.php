@@ -3,7 +3,9 @@
 @section('content')
     <div class="container">
         <h1 class="text-center mb-3">Контакты</h1>
-        @include('contacts.upload')
+        @if(Auth::user()->upload==1)
+           @include('contacts.upload')
+        @endif
         @include('contacts.filter')
         <div class="row">
             <div class="col-md-12">
@@ -15,7 +17,6 @@
                             <th scope="col">INN</th>
                             <th scope="col">PHONE</th>
                             <th scope="col" class="text-uppercase">organization</th>
-                            {{--                            <th scope="col">DBL</th>--}}
                             @if($banks)
                                 @foreach($banks as $bank)
                                     <th scope="col">{{$bank->shortname}}</th>

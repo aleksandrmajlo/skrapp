@@ -47,6 +47,19 @@
         <div class="col-md-12">
             <h3 class="my-3">РЕЗУЛЬТАТ ПАРАМЕТРОВ ФИЛЬТРА: {{$count}}</h3>
         </div>
+        @if(Auth::user()->ContactDownload ==1)
+            <div class="col-md-12">
+                @php
+                  $url='';
+                  foreach (request()->all() as $k=>$v){
+                     if($v){
+                         $url.=$k.'='.$v.'&';
+                     }
+                  }
+                @endphp
+               <a class="btn btn-primary" href="/contact-export?{{$url}}">Скачать</a>
+            </div>
+        @endif
     @endif
     <div class="col-md-12">
         <hr class="new1">

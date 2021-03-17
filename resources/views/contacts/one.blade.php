@@ -33,7 +33,6 @@
         <tr>
             <td>ORGANIZATION</td>
             <td>
-
                 <div class="realData"><span>{{$contact->organization}}</span>
                     <a class="changeLink" href="#"><i class="fab fa-stack-exchange"></i></a>
                 </div>
@@ -44,12 +43,10 @@
                     <a class="resetLink" href="#"><i class="far fa-window-close"></i></a>
                 </div>
             </td>
-
         </tr>
         <tr>
             <td>FULLNAME</td>
             <td>
-
                 <div class="realData"><span> {{$contact->fullname}}</span>
                     <a class="changeLink" href="#"><i class="fab fa-stack-exchange"></i></a>
                 </div>
@@ -58,9 +55,7 @@
                               value="{{$contact->fullname}}" name="fullname">{{$contact->fullname}}</textarea>
                     <a class="resetLink" href="#"><i class="far fa-window-close"></i></a>
                 </div>
-
             </td>
-
         </tr>
         <tr>
             <td>PHONE</td>
@@ -108,7 +103,6 @@
     <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
     <span>Сохранить измененные данные контакта</span>
 </button>
-
 <div class="table-responsive mt-5">
     <table class="table table-bordered table-hover">
         <thead class="thead-dark">
@@ -204,6 +198,5 @@
     </table>
 </div>
 <contact-bank contact_id="{{$contact->id}}"></contact-bank>
-<a href="/statusreport" class="btn btn-primary">Получить результат </a>
-{{--<contact-resultget></contact-resultget>--}}
+<a  href="/statusreport" id="get_result_report" class="d-none">Получить результат </a>
 

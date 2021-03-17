@@ -4,12 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title')-{{ config('app.name', 'Laravel') }}</title>
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <title>@yield('title')-{{ config('app.name', '') }}</title>
+    <script src="{{ mix('js/app.js') }}" defer></script>
+
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
     <script src="https://kit.fontawesome.com/9e665f9e92.js" crossorigin="anonymous"></script>
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
 <div id="app">
@@ -34,9 +35,13 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/operators">ОПЕРАТОРЫ</a>
                     </li>
+
                     <li class="nav-item">
                         <a class="nav-link" href="/settings">НАСТРОЙКИ</a>
                     </li>
+{{--                    <li class="nav-item">--}}
+{{--                        <a class="nav-link" href="/settings">ПРОФИЛЬ</a>--}}
+{{--                    </li>--}}
                     @guest
                     @else
                         <li class="nav-item">
